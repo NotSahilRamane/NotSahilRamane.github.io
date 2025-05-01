@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects – Sahil Ramane</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: #fff;
+      color: #111;
+      line-height: 1.6;
+      padding: 2rem;
+    }
+
+    nav {
+      position: fixed;
+      top: 1.5rem;
+      right: 2rem;
+    }
+
+    nav a {
+      margin: 0 0.75rem;
+      text-decoration: none;
+      color: #007acc;
+      font-weight: 500;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      grid-auto-rows: 10px;
+      gap: 16px;
+      padding: 2rem;
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .overlay {
+      position: absolute;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover .overlay {
+      transform: translateY(0);
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* Modal styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .modal img {
+      width: 100%;
+      height: auto;
+      max-width: 800px; /* Limit image width */
+      max-height: 80vh; /* Limit image height */
+      border-radius: 10px;
+    }
+
+    .modal-description {
+      margin-top: 10px;
+      color: white;
+      font-size: 1rem;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 0.5rem;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .close {
+  position: absolute;
+  top: 20px;
+  right: 50px;
+  color: white;
+  font-size: 3rem;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <a href="/">Home</a>
+    <a href="about/">About</a>
+    <a href="projects/">Projects</a>
+    <a href="#blog">Blog</a>
+  </nav>
+
+  <h1>Projects</h1>
+
+  <div class="gallery">
+    <div class="gallery-item">
+      <img src="images/EIM2.jpg" alt="EIM 1">
+      <div class="overlay">EIM: EV Tractor</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/EIM 1.jpg" alt="EIM 2">
+      <div class="overlay">EIM: Battery Swap Station</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/EIM4.jpg" alt="EIM 3">
+      <div class="overlay">EIM: Unexpected Vehicle Lineup</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/EIM3.jpg" alt="EIM 4">
+      <div class="overlay">EIM: Loaded Range Tests  </div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-FinalMappingBag.jpg" alt="Praan 1">
+      <div class="overlay">Praan: Final Version of the 3D Mapping Bag, control interface shifted to an android app and internals made more easily servicable.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-LaptopDustyScreen.jpg" alt="Praan 2">
+      <div class="overlay">Praan: Used a laptop for mapping a remote polluted factory in India. The battery pack in the mapping system was not allowed on flights further requiring revision.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-Bag1ChildProofedGUI.jpg" alt="Praan 3">
+      <div class="overlay">Praan: Had the 3D Mapping GUI tested by a school kid, making it truly usable by any nontech person.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-MappingBoxWIP.jpg" alt="Praan 4">
+      <div class="overlay">Praan: Setting up Bag 1.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-MappingWearable.jpg" alt="Praan 5">
+      <div class="overlay">Praan: Mapping Prototype 1 - Hardware cased inside a baby carrier, wired touch display for control interface.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-MakingOthersMapg.jpg" alt="Praan 6">
+      <div class="overlay">Praan: Testing the 3D Mapping Hardware and tuning GUI with feedback from nontech personnel in office.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-Unrelated Manav.jpg" alt="Praan 7">
+      <div class="overlay">Praan: Our Industrial Designer WIP Hive Prototype Design.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-compilingpcd1.jpg" alt="Praan 8">
+      <div class="overlay">Praan: Compiling PointClouds on the back of a cab, processing took 27 hours for the very first time.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-HardwareTestingforMappingBag.jpg" alt="Praan 9">
+      <div class="overlay">Praan: Testing 3D Mapping Hardware.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-Prototype1 at Factory.jpg" alt="Praan 10">
+      <div class="overlay">Praan: Prototype 1 live in a polluted factory.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-IRmappingin0darkness.jpg" alt="Praan 11">
+      <div class="overlay">Praan: Tuning mapping software for IR image inclusion and mapping.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-IRTestsinPollutedAreas.jpg" alt="Praan 12">
+      <div class="overlay">Praan: Testing Lidar and XBOX Kinect IR capablities in different levels of pollution.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-SetupBeforeTesting.jpg" alt="Praan 13">
+      <div class="overlay">Praan: Test rig before testing.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-SetupAfterTesting.jpg" alt="Praan 14">
+      <div class="overlay">Praan: Test rig after testing (yes we cleaned it after every test!).</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-MappingTesting.jpg" alt="Praan 15">
+      <div class="overlay">Praan: Testing mapping software in large areas.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-TuningGUIOTG.jpg" alt="Praan 16">
+      <div class="overlay">Praan: Fine tuning GUI placement for the mapping software during testing.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-Meshing.png" alt="Praan 17">
+      <div class="overlay">Praan: Realtime meshing tests.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-RealsenseCapablitiesSetup.jpg" alt="Praan 18">
+      <div class="overlay">Praan: Testbox for pollution testing the capablities of Realsense.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-RealsenseCapablitiesTesting.jpg" alt="Praan 19">
+      <div class="overlay">Praan: Carbon Black</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-VeryFirstCompletePCD.jpg" alt="Praan 20">
+      <div class="overlay">Praan: Very first PCD captured.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/Praan-VeryFirstPCD.png" alt="Praan 21">
+      <div class="overlay">Praan: Very first PCD captured.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/FreelanceProject1-LidarBased Autonomous Wheelchair for Blind and physically disabled people.jpg" alt="Project 2">
+      <div class="overlay">Freelance Project: Lidar Based Autonomous Wheelchair for the blind and physically disabled.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/DVModel2.jpg" alt="ORI DV 1">
+      <div class="overlay">ORI: Driverless Testbench 1, was destroyed immediately after in an accident during testing. Only picture captured.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/DVModel3-FinalAvatar1.jpg" alt="LY Project 1">
+      <div class="overlay">KJSCE Thesis Project: F1:10th Prototype Final Avatar - Kinect 360 Stripped Down, SBG Ellipse N and a Latte Panda Delta 3 on a Tamiya TT-02 chassis.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/DVModel3-KintectWeightReduction1.jpg" alt="LY Project 2">
+      <div class="overlay">KJSCE Thesis Project: Stripping Down XBOX Kinect Begins</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/DVModel3-KinectWeightReduction2.jpg" alt="LY Project 3">
+      <div class="overlay">KJSCE Thesis Project: Kinect Stripping Completed, ditched all unnecessary modules and external shell. Risky but necessary!</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/DVModel3-LYProject.jpg" alt="LY Project 4">
+      <div class="overlay">KJSCE Thesis Project: Naked Tamiya TT-02</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/DVModel3-MakingCADsSoftwareEngineerWay.jpg" alt="LY Project 5">
+      <div class="overlay">KJSCE Thesis Project: Marking rough placement on the TT-02 body for all components.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/DVModel3-ShiftingtoLattePanda.jpg" alt="LY Project 6">
+      <div class="overlay">KJSCE Thesis Project: Shifting to Latte Panda from Raspi</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/DVModel3-TestingonRealsenseCamera.jpg" alt="LY Project 7">
+      <div class="overlay">KJSCE Thesis Project: Testing limits on a realsense camera borrowed from Praan.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/DVModel3-LYProjectEval1.jpg" alt="LY Project 8">
+      <div class="overlay">KJSCE Thesis Project: Lidar based tracking used to fail on high speeds, borrowed a realsense camera from our professors and tested a basic system before mid project external evaluation.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/DVTesting-LaptopInPlace.jpg" alt="ORI 1">
+      <div class="overlay">ORI: Shifted to a laptop for compute from raspi after it died due to overheating in the middle of testing.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/DVTesting-Setup.jpg" alt="ORI 2">
+      <div class="overlay">ORI: Makeshift Lidar and Steering Mechanism setup for Driverless testing on ORI 2022 Lemnos.</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/DVTesting-Steering.PNG" alt="ORI 3">
+      <div class="overlay">ORI: Removed the steering wheel to directly actuate using a dc high torque motor. Jugaad PRO MAX!</div>
+    </div>
+  </div>
+
+  <!-- Modal for full-screen view -->
+  <div id="modal" class="modal">
+    <span class="close">&times;</span>
+    <div class="modal-content">
+      <img id="modal-image" src="" alt="Project Image">
+      <div id="modal-description" class="modal-description"></div>
+    </div>
+  </div>
+
+  <script>
+    // Get all images in the gallery
+    const images = document.querySelectorAll('.gallery-item img');
+    const modal = document.getElementById('modal');
+    const modalImage = document.getElementById('modal-image');
+    const modalDescription = document.getElementById('modal-description');
+    const closeButton = document.querySelector('.close');
+
+    // When an image is clicked, open the modal
+    images.forEach(image => {
+      image.addEventListener('click', function() {
+        const description = image.getAttribute('data-description');
+        modalImage.src = image.src;  // Set the image source in the modal
+        const overlay = image.parentElement.querySelector('.overlay');
+        modalDescription.textContent = overlay ? overlay.textContent : '';
+    // Set the description in the modal
+        modal.style.display = 'flex';  // Show the modal
+      });
+    });
+
+    // Close the modal when clicking the "x" (close button)
+    closeButton.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+
+    // Close the modal if user clicks outside of the modal content
+    window.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Dynamic resizing for the grid (for the masonry-style effect)
+    function resizeAllGridItems() {
+      const grid = document.querySelector(".gallery");
+      const items = document.querySelectorAll(".gallery-item");
+      for (let i = 0; i < items.length; i++) {
+        const rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+        const rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('gap'));
+        const itemContent = items[i].querySelector('img');
+        const rowSpan = Math.ceil((itemContent.offsetHeight + rowGap) / (rowHeight + rowGap));
+        items[i].style.gridRowEnd = "span " + rowSpan;
+      }
+    }
+    
+
+    window.addEventListener("load", resizeAllGridItems);
+    window.addEventListener("resize", resizeAllGridItems);
+    document.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape') {
+    modal.style.display = 'none';
+  }
+});
+
+  </script>
+</body>
+</html>
