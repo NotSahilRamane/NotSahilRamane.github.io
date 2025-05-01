@@ -1,0 +1,5 @@
+title: Daily Thoughts by Sahil Ramane
+description: This is a collection of my daily thoughts and tech reviews/updates.
+theme: null
+markdown: kramdown
+permalink: /:title/
