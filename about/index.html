@@ -54,6 +54,7 @@
   padding-top: 5rem;
 }
 
+
 .photo img {
   width: 150%; /* Increase size by 20% */
   max-width: none; /* Remove the max-width to allow the image to grow */
@@ -75,7 +76,57 @@
       font-size: 1rem;
       margin-bottom: 1rem;
     }
+
+
+    @media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+
+  .main {
+    flex-direction: column;
+    margin: 4rem auto 1rem;
+    gap: 2rem;
+  }
+
+  .photo {
+    padding-top: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .photo img {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  nav {
+    position: static;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  nav a {
+    display: inline-block;
+    margin: 0 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+  }
+}
+
   </style>
+
+  
 </head>
 <body>
   <nav>
