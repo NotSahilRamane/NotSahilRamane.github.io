@@ -7,8 +7,6 @@ tags: [gaming, GTA VI, Rockstar, pop culture, storytelling, trailer analysis]
 ---
 
 ### *Welcome Back to Vice City*  
-*A closer look at GTA VI Trailer 2 and the promise of something unforgettable.*
-
 On May 6, Rockstar Games released the second trailer for *Grand Theft Auto VI*—and the internet lit up. Again.
 
 But this time, it wasn’t just about jaw-dropping visuals or massive scope. This trailer felt different. More grounded, more cinematic, and, honestly, more human. We already knew from the first teaser that GTA VI was returning to **Vice City**, but now we’re starting to understand what kind of story Rockstar is trying to tell.
