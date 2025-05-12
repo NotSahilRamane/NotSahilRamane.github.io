@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Burning Wings, Golden Silence"
-date: 2025-05-12
+date: 2025-05-10
 categories: [reflections]
 tags: [identity, solitude, burnout, reinvention, emotion]
 ---
