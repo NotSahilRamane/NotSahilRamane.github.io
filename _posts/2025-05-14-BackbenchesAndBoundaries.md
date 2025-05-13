@@ -1,0 +1,55 @@
+---
+title: Backbenches and Boundaries
+date: 2025-05-14
+layout: post
+---
+
+## Blog 2
+
+Two years down the line, 12th Classes.
+
+I had taken a break from tuitions to pursue some hobbies during 11th, and joined back in 12th in the same tuition classes. She had continued through 11th.
+
+When I first saw her again, standing just outside the classroom, I paused. She looked... different. Confident, but quiet. Poised, but unsure. Maybe it was the pressure of boards looming in a year’s time—or maybe something else. Only she knows.
+
+During the summer term we had different batches, barely seeing each other except once in a while. But once the full-time classes began in June, I switched my batch to hers. Partly to align my evenings for my hobbies. But truthfully? I just wanted to see if there was still something between us.
+
+She called me to sit beside her once during a session—and that soon became a habit. Familiar. Comforting.
+
+But a few weeks down the line, I got to know she was in a relationship—with a guy, H.
+
+It shattered me.
+
+On impulse, I confessed to her over WhatsApp. It was sudden, unpolished, but I needed to get it out. She replied asking to meet before the next class. I remember sitting in that empty classroom, waiting. The same one we used to share in 10th. Same benches. Same corner.
+
+She came in quietly and sat across from me.
+
+I laid everything bare. Every word, every emotion. Told her how I’d felt—how I *still* felt. She listened silently, then said something I wasn’t ready for: that she had been into me back in 10th.
+
+I wanted to ask her why she never told me. But I didn’t. Because deep down I knew—I hadn't told her either.
+
+After that, I decided it was best to keep my distance.
+
+And I did. For a few months, at least.
+
+But some stories have a pull stronger than decisions.
+
+We started talking again. Sitting together during lectures, like before. But during breaks, she’d be with him. On our walks home, I became the third wheel—silent, watching, pretending not to notice.
+
+Eventually, I started walking home with a different group. But I kept sitting beside her in class.
+
+She’d rest her head on my shoulder sometimes. Play with my hair. She called me “Ramane” like it was some personal nickname. She said she liked my surname—always had. Her touches, her words—they felt like hints. But how could she mean it? She was already someone else’s.
+
+She used to scold me when I didn’t perform well in our weekly tests. I could breeze through MCQs but struggled with long-form answers. She was the opposite. We were both jealous of each other in a way.
+
+When the exams came, I scored among the highest in the class. Her boyfriend did too. She fell short compared to the toppers, and after that, she started sitting in the backbench.
+
+I joined her.
+
+Even when her boyfriend ignored her in class, I didn’t. I couldn’t. I helped her study, gave her company.
+
+April/May 2019. It was the last day of tuitions. But this time, I didn’t wait for her. I don't even remember if we sat together that day. I just got up and left as soon as class ended.
+
+She texted me later, clearly upset. But I didn’t respond.
+
+Some exits don’t need closure. Just the quiet understanding that they had to happen.
