@@ -1,5 +1,5 @@
 ---
-title: "Maybe in Another Life..."
+title: (Pt. 4) Maybe in Another Life... 
 description: The last chapter before she left, and the closure I never knew I needed.
 date: 2025-05-14
 author: Sahil Ramane

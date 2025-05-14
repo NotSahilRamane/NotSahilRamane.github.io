@@ -1,5 +1,5 @@
 ---
-title: Some Songs Weren’t Meant to Be Played Twice
+title: (Pt. 3) Some Songs Weren’t Meant to Be Played Twice 
 date: 2025-05-14
 description: Chapter 3 of my story — navigating gaming, growing distance, and drunk rituals.
 layout: post
