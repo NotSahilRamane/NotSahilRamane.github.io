@@ -56,7 +56,8 @@ She’s looking for grooms.
 
 Preferably in the US.
 
-I’ve had one question stuck in my throat all day.
+And I have been trying to ask her this one question since morning...
+But I just can’t get myself to do it.
 
 **What do I do now?**
 
@@ -69,18 +70,3 @@ Do I meet her?
 Do I disappear?
 
 **Or does it end here?**
-
-<br/>
-
-<blockquote>
-Bring back the love, to me  
-Hold me back into it  
-Was never enough, for you  
-Take me back again  
-Bring back the love, to me  
-Hold me back into it  
-Was never enough, for you  
-Feels like, we'll never be the same again  
-</blockquote>
-
-<small><em>— Lyrics from "Yr Love" by Roosevelt</em></small>
