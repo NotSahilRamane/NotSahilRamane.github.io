@@ -25,11 +25,11 @@ It was... fine. Brief. We talked a little. Then went our own ways.
 
 She’d still show up in the Discord server sometimes—just listening to music. She never asked me to join. But part of me wondered if she was hoping I would.
 
-In May 2022, out of the blue, I got a strongly worded message from her.  
+In May 2022, out of the blue, while having a convo I got a strongly worded message from her.  
 
 > “I do text. You don’t. Try to keep a balance. I don’t want to feel like I’m clinging onto you. It’s annoying badgering feeling. It’s nice to receive a text too.”
 
-I didn’t know how to respond. She wanted to meet again—with A, our mutual friend from school. A and I hadn’t spoken much since 2017, apart from a brief robotics workshop in 2019. Coincidentally, he was also in my engineering college—different branch.
+I didn’t know how to respond. She wanted to meet again—with A, our mutual friend from school. A and I hadn’t spoken much since 2017, apart from a brief robotics workshop in 2019. He was also in my engineering college—different branch.
 
 But the timing was awful. That very day, I was moving to Pune for a three-month internship. I told her. She was surprisingly calm about it. We agreed to catch up later.
 
@@ -37,14 +37,12 @@ And we did. Nothing special. Just okay. But something lingered in my mind—the 
 
 During my stay in Pune, her messages began shifting tone—especially at night. Drunk calls. Slurred texts. At first, I laughed it off. Never asked why it was always me she contacted.
 
-Every morning after, I’d send over Gatorade. Coconut water. Like clockwork. I thought it was our thing.
+Every morning after, I’d send over Gatorade. Coconut water a few times.
 
-Until one night, I realized she wasn’t at home. Concerned, I called A, hoping he had her dad’s number. He didn’t—but casually said, “She’s drunk-calling me too.”  
+Until one night, I thought she wasn’t at home. Concerned, I called A, hoping he had her dad’s number. He didn’t—but casually said, “She’s drunk-calling me too.”  
 Something snapped.  
 
 From that night onward, I stopped replying to her calls when she was drunk.
-
----
 
 **December 2022.**  
 I got selected for an internship—barely 100 meters from her house. The moment I found out, I texted her. She was thrilled. We promised we’d meet often once I started.
