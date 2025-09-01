@@ -55,14 +55,3 @@ And today, on May 14, 2025 — exactly 9 years and a month since all this starte
 She’s looking for grooms.
 
 Preferably in the US.
-
-And I have been trying to ask her this one question since morning...
-But I just can’t get myself to do it.
-
-**What do I do now?**
-
-Do I ask her?  
-
-Do I disappear?
-
-**Or does it end here?**
