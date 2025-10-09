@@ -6,10 +6,22 @@ categories: misc
 ---
 
 <!-- Paste this into a Custom HTML block or your page's HTML -->
-<div style="background:#ffffff; padding:12px; overflow:auto;">
-  <pre style="margin:0; color:#000000; background:transparent;
-              font-family: 'Courier New', Courier, monospace;
-              font-size:10px; line-height:1; white-space:pre; tab-size:4;">
+<div style="
+  background:#ffffff;
+  color:#000000;
+  width:100%;
+  overflow-x:auto;
+  text-align:center;
+  padding:0;
+">
+  <pre style="
+    display:inline-block;
+    margin:0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(4px, 1vw, 10px);
+    line-height: 1;
+    white-space: pre;
+  ">
  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%@@%%%%%@@@%@@@@@@@@@@@@@@@@@@@@@@@@ 
  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%@@%@@@@@%@@@@@@@@@@@@@@@@@@@@@@@ 
  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
