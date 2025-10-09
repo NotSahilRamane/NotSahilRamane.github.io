@@ -101,5 +101,20 @@ categories: misc
  %%%%%@%@@@@@@@@@@@@@@@@%%###******************####%%%%%%%%%%@@@@@@%%%%%%%%%%%%%%%%%@@@@@@@%%%%%%%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%% 
  %%%%%%@@@@@@@@@@@@@@@@@@%%###*****************####%%%%%%%%%%@@@@@@@@%@@@@@@@%%%%%%%%@@@@@%%%%@%%%%%%%%%%@@%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%% 
  %%%%%%@@@@@@@@@@@@@@@@%@%%%###***************#####%%%%%%@%@@@@@@@@@@@@@@@@@@@%%%%%@@@@@@@%%%@@@%%%%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%@@@@@ 
-   </pre>
+<!-- truncated for brevity -->
+  </pre>
 </div>
+
+<script>
+  function fitAsciiToScreen() {
+    const pre = document.getElementById('ascii-art');
+    const parent = pre.parentElement;
+    const parentWidth = parent.clientWidth;
+    const contentWidth = pre.scrollWidth;
+    const scale = parentWidth / contentWidth;
+    pre.style.transform = `scale(${scale})`;
+  }
+
+  window.addEventListener('load', fitAsciiToScreen);
+  window.addEventListener('resize', fitAsciiToScreen);
+</script>
