@@ -8,7 +8,7 @@ categories: [personal, memories]
 It was late afternoon.  
 I hadn’t slept the night before.
 
-I was sitting in the co-passenger seat of a truck I had been on trial with since morning. Work notifications kept buzzing endlessly, the usual background noise of responsibility. Somewhere in between them, two messages stood out.
+I was sitting in the co-passenger seat of a truck I had been on trial with since morning. Work notifications kept buzzing endlessly. Somewhere in between them, two messages stood out.
 
 > *“Hayloo, are you awake?”*
 
