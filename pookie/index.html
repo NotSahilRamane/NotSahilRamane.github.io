@@ -1309,8 +1309,10 @@
       // Clear search when switching chats
       clearSearch();
 
-      // Start auto-loading messages sequentially
-      startAutoLoading();
+      // Start auto-loading messages sequentially after a short delay
+      setTimeout(() => {
+        startAutoLoading();
+      }, 1000); // Wait 1 second after initial render to start auto-loading
     }
 
     function startAutoLoading() {
@@ -1330,14 +1332,16 @@
           clearInterval(autoLoadInterval);
           autoLoadInterval = null;
           isLoadingOlder = false;
+          console.log('All messages loaded');
           return;
         }
 
         // Load next batch if not already loading
         if (!isLoadingOlder) {
+          console.log(`Auto-loading: ${displayedCount} of ${totalMessages} loaded`);
           loadOlderMessages();
         }
-      }, 500); // Load every 500ms for smooth sequential loading
+      }, 800); // Load every 800ms to allow previous load to complete
     }
 
     function stopAutoLoading() {
@@ -1437,6 +1441,10 @@
     // Removed checkScrollAndAutoLoad - using sequential auto-loading instead
 
     function loadOlderMessages() {
+      if (isLoadingOlder) {
+        return; // Already loading, skip this call
+      }
+
       const filteredMessages = getFilteredMessages();
       const totalMessages = filteredMessages.length;
       
@@ -1445,6 +1453,8 @@
         return; // All messages already loaded
       }
 
+      isLoadingOlder = true; // Set loading flag immediately
+      
       const container = document.getElementById('messagesContainer');
       const previousScrollHeight = container.scrollHeight;
       const previousScrollTop = container.scrollTop;
@@ -1458,8 +1468,10 @@
         const scrollDifference = newScrollHeight - previousScrollHeight;
         container.scrollTop = previousScrollTop + scrollDifference;
         
-        isLoadingOlder = false;
-        // Auto-loading will continue via interval
+        // Reset loading flag after a short delay to ensure render is complete
+        setTimeout(() => {
+          isLoadingOlder = false;
+        }, 100);
       });
     }
 
