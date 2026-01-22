@@ -1390,39 +1390,10 @@
       const startIndex = Math.max(0, totalMessages - displayedCount);
       const messagesToShow = filteredMessages.slice(startIndex);
 
-      // If appending (loading older messages), prepend them
+      // Append mode is now handled directly in loadOlderMessages()
+      // This path should not be reached, but keeping for safety
       if (append) {
-        const previousStartIndex = Math.max(0, totalMessages - (displayedCount - MESSAGES_PER_LOAD));
-        const newMessages = filteredMessages.slice(previousStartIndex, startIndex);
-        
-        console.log(`Rendering ${newMessages.length} older messages (${previousStartIndex} to ${startIndex})`);
-        
-        if (newMessages.length === 0) {
-          console.warn('No new messages to render in append mode');
-          return;
-        }
-        
-        const fragment = document.createDocumentFragment();
-        newMessages.forEach((message) => {
-          const messageDiv = createMessageElement(message);
-          fragment.appendChild(messageDiv);
-        });
-        
-        // Insert at the beginning
-        if (container.firstChild) {
-          container.insertBefore(fragment, container.firstChild);
-        } else {
-          container.appendChild(fragment);
-        }
-        
-        console.log(`Added ${newMessages.length} messages. Container now has ${container.children.length} children`);
-        
-        // Re-apply search highlights if active
-        if (searchQuery && searchQuery.trim()) {
-          setTimeout(() => {
-            performSearch();
-          }, 0);
-        }
+        console.warn('renderMessages called with append=true, but this should be handled in loadOlderMessages');
         return;
       }
 
@@ -1472,8 +1443,41 @@
       // Check if user is near the bottom (within 100px)
       const isNearBottom = (previousScrollHeight - previousScrollTop - containerHeight) < 100;
       
+      // Calculate the old startIndex BEFORE updating displayedCount
+      const oldStartIndex = Math.max(0, totalMessages - displayedCount);
+      
+      // Update displayedCount
       displayedCount = Math.min(displayedCount + MESSAGES_PER_LOAD, totalMessages);
-      renderMessages(true); // Append mode
+      
+      // Calculate new startIndex
+      const newStartIndex = Math.max(0, totalMessages - displayedCount);
+      
+      // Get the messages to add (between oldStartIndex and newStartIndex)
+      const newMessages = filteredMessages.slice(newStartIndex, oldStartIndex);
+      
+      console.log(`Loading older messages: oldStartIndex=${oldStartIndex}, newStartIndex=${newStartIndex}, newMessages.length=${newMessages.length}, displayedCount=${displayedCount}, totalMessages=${totalMessages}`);
+      
+      if (newMessages.length === 0) {
+        console.warn('No new messages to load');
+        isLoadingOlder = false;
+        return;
+      }
+      
+      // Render the new messages by prepending them
+      const fragment = document.createDocumentFragment();
+      newMessages.forEach((message) => {
+        const messageDiv = createMessageElement(message);
+        fragment.appendChild(messageDiv);
+      });
+      
+      // Insert at the beginning
+      if (container.firstChild) {
+        container.insertBefore(fragment, container.firstChild);
+      } else {
+        container.appendChild(fragment);
+      }
+      
+      console.log(`Added ${newMessages.length} messages. Container now has ${container.children.length} children`);
       
       // Maintain scroll position after DOM updates
       // Use double requestAnimationFrame to ensure DOM is fully updated
