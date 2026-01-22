@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Girlfriend Debt Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #ffe6ec;
+      padding: 20px;
+    }
+
+    .box {
+      max-width: 480px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .sub {
+      text-align: center;
+      font-size: 0.85rem;
+      opacity: 0.7;
+      margin-bottom: 16px;
+    }
+
+    .amount {
+      font-size: 2rem;
+      text-align: center;
+      font-weight: bold;
+      margin: 12px 0;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .deduct { background: #4caf50; color: #fff; }
+    .share  { background: #ff6f91; color: #fff; }
+    .reset  { background: #888; color: #fff; }
+
+    .msg {
+      text-align: center;
+      margin-top: 10px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h1>💸 Debt Tracker</h1>
+  <div class="sub">Simple interest • emotionally binding</div>
+
+  <div class="amount">₹<span id="balance">0</span></div>
+  <div class="msg" id="message"></div>
+
+  <label>Amount to deduct (₹)</label>
+  <input type="number" id="deductAmount" min="0" step="1" placeholder="e.g. 200">
+
+  <button class="deduct" onclick="deduct()">Deduct amount</button>
+  <button class="share" onclick="shareLink()">Copy shareable link 🔗</button>
+  <button class="reset" onclick="resetAll()">Reset (forgiveness ritual)</button>
+</div>
+
+<script>
+  /* ===============================
+     CONFIG
+  =============================== */
+  const INITIAL_PRINCIPAL = 1800;
+  const RATE = 0.098; // 9.8% weekly simple interest
+  const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+  /* ===============================
+     STATE HANDLING
+  =============================== */
+  function getURLState() {
+    const p = new URLSearchParams(window.location.search);
+    if (!p.has("b")) return null;
+
+    return {
+      principal: parseFloat(p.get("p")) || INITIAL_PRINCIPAL,
+      balance: parseFloat(p.get("b")) || INITIAL_PRINCIPAL,
+      lastInterest: parseInt(p.get("t")) || Date.now()
+    };
+  }
+
+  function loadState() {
+    const urlState = getURLState();
+    if (urlState) {
+      saveState(urlState);
+      return urlState;
+    }
+
+    return {
+      principal: parseFloat(localStorage.getItem("principal")) || INITIAL_PRINCIPAL,
+      balance: parseFloat(localStorage.getItem("balance")) || INITIAL_PRINCIPAL,
+      lastInterest: parseInt(localStorage.getItem("lastInterest")) || Date.now()
+    };
+  }
+
+  function saveState(state) {
+    localStorage.setItem("principal", state.principal);
+    localStorage.setItem("balance", state.balance);
+    localStorage.setItem("lastInterest", state.lastInterest);
+  }
+
+  /* ===============================
+     INTEREST LOGIC (AUTOMATIC)
+  =============================== */
+  function applySimpleInterest(state) {
+    const now = Date.now();
+
+    // Number of full weeks elapsed since last interest calculation
+    const elapsedWeeks = Math.floor(
+      (now - state.lastInterest) / WEEK_MS
+    );
+
+    if (elapsedWeeks > 0) {
+      const interest =
+        state.principal * RATE * elapsedWeeks;
+
+      state.balance += interest;
+      state.lastInterest += elapsedWeeks * WEEK_MS;
+    }
+  }
+
+  /* ===============================
+     UI ACTIONS
+  =============================== */
+  function deduct() {
+    const amount = parseFloat(
+      document.getElementById("deductAmount").value
+    );
+
+    if (!amount || amount <= 0) {
+      updateUI("No deduction made. Debt remains.");
+      return;
+    }
+
+    state.balance -= amount;
+    if (state.balance < 0) state.balance = 0;
+
+    saveState(state);
+    updateUI(`₹${amount} deducted. Temporary relief granted.`);
+  }
+
+  function shareLink() {
+    const params = new URLSearchParams({
+      p: state.principal.toFixed(2),
+      b: state.balance.toFixed(2),
+      t: state.lastInterest
+    });
+
+    const url = `${location.origin}${location.pathname}?${params}`;
+    navigator.clipboard.writeText(url);
+    updateUI("Link copied. Evidence exported.");
+  }
+
+  function resetAll() {
+    localStorage.clear();
+    state = loadState();
+    updateUI("Debt reset. Memory erased.");
+  }
+
+  function updateUI(msg = "") {
+    document.getElementById("balance").textContent =
+      state.balance.toFixed(2);
+    document.getElementById("message").textContent =
+      msg || banter(state.balance);
+  }
+
+  function banter(balance) {
+    if (balance === 0) return "Debt cleared. Emotional audit pending.";
+    if (balance < 500) return "Almost forgiven.";
+    if (balance < 1500) return "Debt acceptable. Attitude not.";
+    if (balance < 3000) return "Interest growing. Patience shrinking.";
+    return "This link is now evidence.";
+  }
+
+  /* ===============================
+     INIT
+  =============================== */
+  let state = loadState();
+  applySimpleInterest(state);
+  saveState(state);
+  updateUI();
+</script>
+
+</body>
+</html>

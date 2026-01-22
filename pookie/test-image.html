@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Test</title>
+</head>
+<body>
+    <h1>Testing Image Paths</h1>
+    <p>Absolute path:</p>
+    <img src="/Instagram/your_instagram_activity/messages/inbox/hufrish_1697894724937506/photos/1579979189694141.jpg" 
+         alt="Test absolute" 
+         onerror="console.error('Absolute path failed'); this.style.border='2px solid red';" />
+    
+    <p>Relative path:</p>
+    <img src="../Instagram/your_instagram_activity/messages/inbox/hufrish_1697894724937506/photos/1579979189694141.jpg" 
+         alt="Test relative" 
+         onerror="console.error('Relative path failed'); this.style.border='2px solid red';" />
+    
+    <script>
+        console.log('Current location:', window.location.href);
+        console.log('Base URL:', window.location.origin);
+    </script>
+</body>
+</html>

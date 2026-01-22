@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pookie - Instagram Chats</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      height: 100vh;
+      overflow: hidden;
+      overflow-x: hidden;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      max-width: 1400px;
+      margin: 0 auto;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    /* Sidebar with chat list */
+    .sidebar {
+      width: 350px;
+      background: #121212;
+      border-right: 1px solid #262626;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid #262626;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sidebar-header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .chat-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .chat-item {
+      padding: 16px 20px;
+      cursor: pointer;
+      border-bottom: 1px solid #262626;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-item:hover {
+      background: #1a1a1a;
+    }
+
+    .chat-item.active {
+      background: #1a1a1a;
+    }
+
+    .chat-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .profile-picture {
+      flex-shrink: 0;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .chat-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-name {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-preview {
+      font-size: 14px;
+      color: #a8a8a8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Main chat area */
+    .chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #000;
+      min-width: 0;
+      overflow-x: hidden;
+    }
+
+    .chat-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #262626;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #121212;
+    }
+
+    .chat-header-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      overflow: hidden;
+    }
+
+    .chat-header-name {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .messages-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+      width: 100%;
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      max-width: 70%;
+      min-width: 0;
+      width: fit-content;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.sent {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message.received {
+      align-self: flex-start;
+    }
+
+    .message-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .message-content {
+      background: #262626;
+      padding: 8px 12px;
+      border-radius: 18px;
+      word-wrap: break-word;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      line-height: 1.4;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    .message.sent .message-content {
+      background: #0095f6;
+      color: #fff;
+    }
+
+    .message.received .message-content {
+      background: #262626;
+      color: #fff;
+    }
+
+    .message-text {
+      font-size: 14px;
+      margin-bottom: 4px;
+      word-wrap: break-word;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+    }
+
+    .message-attachment {
+      margin-top: 8px;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      max-width: 100%;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .message-attachment a {
+      color: #0095f6;
+      text-decoration: none;
+      font-size: 12px;
+      word-break: break-all;
+      overflow-wrap: break-word;
+      max-width: 100%;
+      display: block;
+    }
+
+    .message-attachment a:hover {
+      text-decoration: underline;
+    }
+
+    .message-image {
+      margin-top: 8px;
+      border-radius: 12px;
+      overflow: hidden;
+      max-width: 300px;
+      width: 100%;
+    }
+
+    .message-image img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      object-fit: contain;
+    }
+
+    .message-instagram-link {
+      margin-top: 8px;
+      max-width: 100%;
+      width: 100%;
+    }
+
+    .instagram-embed-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      width: 100%;
+    }
+
+    .instagram-link-preview {
+      display: flex;
+      flex-direction: column;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: background 0.2s;
+      overflow: hidden;
+      max-width: 100%;
+    }
+
+    .message.sent .instagram-link-preview {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .instagram-link-preview:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .message.sent .instagram-link-preview:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .instagram-link-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .instagram-link-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .instagram-link-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .instagram-link-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .instagram-link-url {
+      font-size: 12px;
+      color: #a8a8a8;
+      word-break: break-all;
+      overflow-wrap: break-word;
+    }
+
+    .instagram-link-preview-image {
+      width: 100%;
+      min-height: 400px;
+      max-height: 600px;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 1;
+    }
+
+    .instagram-link-preview-image::before {
+      content: '📷';
+      font-size: 48px;
+      opacity: 0.3;
+      position: absolute;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .instagram-link-preview-image iframe {
+      width: 100%;
+      min-height: 400px;
+      max-height: 600px;
+      border: none;
+      background: transparent;
+      position: relative;
+      z-index: 1;
+    }
+
+    .instagram-link-preview-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .instagram-link-preview-image .embed-fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      font-size: 14px;
+      position: absolute;
+      z-index: 0;
+    }
+
+    .instagram-link-footer {
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #a8a8a8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .instagram-link-footer::before {
+      content: '▶';
+      font-size: 10px;
+    }
+
+    .message-reactions {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #a8a8a8;
+    }
+
+    .message-timestamp {
+      font-size: 11px;
+      color: #a8a8a8;
+      margin-top: 4px;
+      padding: 0 4px;
+    }
+
+    .empty-state {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #a8a8a8;
+      font-size: 14px;
+    }
+
+    .load-more-indicator {
+      text-align: center;
+      padding: 12px;
+      color: #a8a8a8;
+      font-size: 12px;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #121212;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #262626;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #363636;
+    }
+
+    /* Loading state */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #a8a8a8;
+    }
+
+    /* Filter out system messages */
+    .message.system {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h1>Messages</h1>
+      </div>
+      <div class="chat-list" id="chatList">
+        <div class="loading">Loading chats...</div>
+      </div>
+    </div>
+
+    <!-- Main chat area -->
+    <div class="chat-area">
+      <div class="chat-header" id="chatHeader" style="display: none;">
+        <div class="chat-header-avatar" id="chatHeaderAvatar"></div>
+        <div class="chat-header-name" id="chatHeaderName"></div>
+      </div>
+      <div class="messages-container" id="messagesContainer">
+        <div class="empty-state">Select a chat to view messages</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let chatsData = null;
+    let currentChat = null;
+    let currentMessages = [];
+    let displayedCount = 500; // Start with last 500 messages
+    const MESSAGES_PER_LOAD = 200; // Load 200 more at a time
+
+    // Profile picture mapping for chats
+    const chatProfilePictures = {
+      'hufrish': 'hufrish.png',
+      'smolexoticfish': 'smolexoticfish.png'
+    };
+
+    // Profile picture mapping for individual senders
+    const senderProfilePictures = {
+      'HUFRISH': 'hufrish.png',
+      'साहील': 'sahil.jpg', // You (Sahil)
+      'पुष्पांशु 🐌': 'pushpanshu.png',
+      'Anilesh Duraphe': 'anilesh.png'
+    };
+
+    // Load chat data
+    fetch('chats_data.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        chatsData = data;
+        renderChatList();
+      })
+      .catch(error => {
+        console.error('Error loading chat data:', error);
+        const errorMsg = error.message || 'Unknown error';
+        document.getElementById('chatList').innerHTML = `
+          <div class="empty-state">
+            Error loading chats<br/>
+            <small style="font-size: 11px; margin-top: 8px; display: block;">${errorMsg}</small>
+            <small style="font-size: 11px; margin-top: 4px; display: block;">Make sure you're running a local server or hosting this page</small>
+          </div>
+        `;
+      });
+
+    function getInitials(name) {
+      if (!name) return '?';
+      const words = name.trim().split(/\s+/);
+      if (words.length >= 2) {
+        return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+      }
+      return name.substring(0, 2).toUpperCase();
+    }
+
+    function getAvatarHtml(chatKey, sender, size = 'normal', isSent = false) {
+      let profilePic = null;
+      
+      // Priority 1: For messages, use sender-specific profile picture
+      if (sender && senderProfilePictures[sender]) {
+        profilePic = senderProfilePictures[sender];
+      }
+      // Priority 2: For chat list and header, use chat profile picture
+      else if (chatKey && chatProfilePictures[chatKey]) {
+        profilePic = chatProfilePictures[chatKey];
+      }
+      // Priority 3: For received messages without sender pic, use current chat's profile picture
+      else if (sender && !isSent && currentChat && chatProfilePictures[currentChat]) {
+        profilePic = chatProfilePictures[currentChat];
+      }
+      
+      const sizeClass = size === 'small' ? '28px' : size === 'header' ? '32px' : '56px';
+      
+      if (profilePic) {
+        return `<img src="${profilePic}" alt="${sender || chatKey || 'User'}" class="profile-picture" style="width: ${sizeClass}; height: ${sizeClass}; border-radius: 50%; object-fit: cover;" />`;
+      } else {
+        // Fallback to gradient with initials
+        const initials = sender ? getInitials(sender) : (chatKey && chatsData && chatsData[chatKey] ? getInitials(chatsData[chatKey].name) : '?');
+        return `<div class="chat-avatar" style="width: ${sizeClass}; height: ${sizeClass}; font-size: ${size === 'small' ? '12px' : size === 'header' ? '14px' : '20px'}; display: flex; align-items: center; justify-content: center;">${initials}</div>`;
+      }
+    }
+
+    function getPreview(message) {
+      if (!message) return 'No messages';
+      if (message.message) {
+        return message.message.substring(0, 30) + (message.message.length > 30 ? '...' : '');
+      }
+      if (message.attachments && message.attachments.length > 0) {
+        return '📎 Attachment';
+      }
+      return 'No messages';
+    }
+
+    function isSystemMessage(message) {
+      const systemKeywords = [
+        'liked a message',
+        'reacted',
+        'sent an attachment',
+        'Group invitation link',
+        'Participants:'
+      ];
+      return systemKeywords.some(keyword => 
+        message.message && message.message.toLowerCase().includes(keyword.toLowerCase())
+      );
+    }
+
+    function renderChatList() {
+      const chatList = document.getElementById('chatList');
+      chatList.innerHTML = '';
+
+      Object.keys(chatsData).forEach(chatKey => {
+        const chat = chatsData[chatKey];
+        const lastMessage = chat.messages && chat.messages.length > 0 
+          ? chat.messages[chat.messages.length - 1] 
+          : null;
+
+        const chatItem = document.createElement('div');
+        chatItem.className = 'chat-item';
+        chatItem.onclick = () => openChat(chatKey, chat, chatItem);
+
+        chatItem.innerHTML = `
+          ${getAvatarHtml(chatKey, null, 'normal')}
+          <div class="chat-info">
+            <div class="chat-name">${chat.name}</div>
+            <div class="chat-preview">${getPreview(lastMessage)}</div>
+          </div>
+        `;
+
+        chatList.appendChild(chatItem);
+      });
+    }
+
+    function openChat(chatKey, chat, element) {
+      currentChat = chatKey;
+      displayedCount = 500; // Reset to last 500 messages
+      
+      // Update active state
+      document.querySelectorAll('.chat-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      if (element) {
+        element.classList.add('active');
+      }
+
+      // Update header
+      document.getElementById('chatHeader').style.display = 'flex';
+      document.getElementById('chatHeaderAvatar').innerHTML = getAvatarHtml(chatKey, null, 'header');
+      document.getElementById('chatHeaderName').textContent = chat.name;
+
+      // Filter and store all messages
+      currentMessages = (chat.messages || [])
+        .filter(msg => !isSystemMessage(msg))
+        .reverse(); // Reverse so newest is at end
+
+      // Render messages
+      renderMessages();
+    }
+
+    function renderMessages(append = false) {
+      const container = document.getElementById('messagesContainer');
+      
+      if (!currentMessages || currentMessages.length === 0) {
+        if (!append) {
+          container.innerHTML = '<div class="empty-state">No messages</div>';
+        }
+        return;
+      }
+
+      // Get messages to display (from the end, showing most recent)
+      const totalMessages = currentMessages.length;
+      const startIndex = Math.max(0, totalMessages - displayedCount);
+      const messagesToShow = currentMessages.slice(startIndex);
+
+      // If appending (loading older messages), prepend them
+      if (append) {
+        const previousStartIndex = Math.max(0, totalMessages - (displayedCount - MESSAGES_PER_LOAD));
+        const newMessages = currentMessages.slice(previousStartIndex, startIndex);
+        
+        const fragment = document.createDocumentFragment();
+        newMessages.forEach((message) => {
+          const messageDiv = createMessageElement(message);
+          fragment.appendChild(messageDiv);
+        });
+        
+        const firstChild = container.firstChild;
+        if (firstChild) {
+          container.insertBefore(fragment, firstChild);
+        } else {
+          container.appendChild(fragment);
+        }
+        return;
+      }
+
+      // Otherwise, render all messages
+      container.innerHTML = '';
+      messagesToShow.forEach((message, index) => {
+        const messageDiv = createMessageElement(message);
+        container.appendChild(messageDiv);
+      });
+
+      // Scroll to bottom (or maintain scroll position if loading older messages)
+      if (!append) {
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    function createMessageElement(message) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${message.is_sent ? 'sent' : 'received'}`;
+
+      // Show avatar for received messages, or for sent messages if we have a profile picture
+      const showAvatar = !message.is_sent || (message.is_sent && message.sender && senderProfilePictures[message.sender]);
+      const avatar = showAvatar ? `
+        <div class="message-avatar">${getAvatarHtml(null, message.sender, 'small', message.is_sent)}</div>
+      ` : '';
+
+      // Handle images
+      let imagesHtml = '';
+      if (message.images && message.images.length > 0) {
+        imagesHtml = message.images.map(img => {
+          // Construct image path using folder from parsed data
+          let imgPath = '';
+          if (img.folder && img.path) {
+            // Use folder from parsed data (most reliable)
+            const folder = img.folder;
+            const filename = img.path;
+            // Determine chat key from folder name
+            const chatKey = folder.includes('hufrish') ? 'hufrish' : 'smolexoticfish';
+            // Photos are accessible from server root at /photos/
+            // Use absolute path from server root (most reliable)
+            const localPath = `/photos/${chatKey}/${filename}`;
+            // Fallback paths
+            const relativePath = `../Instagram/your_instagram_activity/messages/inbox/${folder}/photos/${filename}`;
+            const absolutePath = `/Instagram/your_instagram_activity/messages/inbox/${folder}/photos/${filename}`;
+            // Use local path first (most reliable)
+            imgPath = localPath;
+          } else if (img.path) {
+            // Fallback: construct path based on current chat
+            const chatFolder = currentChat === 'hufrish' ? 'hufrish_1697894724937506' : 'smolexoticfish_31077562368510029';
+            // Check if path already includes full path
+            if (img.path.includes('your_instagram_activity/')) {
+              imgPath = `/Instagram/${img.path}`;
+            } else {
+              imgPath = `/Instagram/your_instagram_activity/messages/inbox/${chatFolder}/photos/${img.path}`;
+            }
+          }
+          
+          if (imgPath) {
+            // Ensure we have folder and path for fallback
+            const folder = img.folder || (currentChat === 'hufrish' ? 'hufrish_1697894724937506' : 'smolexoticfish_31077562368510029');
+            const filename = img.path || '';
+            
+            // Determine chat key from folder name
+            const chatKey = folder.includes('hufrish') ? 'hufrish' : 'smolexoticfish';
+            // Create multiple paths to try - prioritize local photos from server root
+            const localPath = `/photos/${chatKey}/${filename}`;
+            const relativePath = `../Instagram/your_instagram_activity/messages/inbox/${folder}/photos/${filename}`;
+            const absolutePath = `/Instagram/your_instagram_activity/messages/inbox/${folder}/photos/${filename}`;
+            const pathsToTry = [localPath, relativePath, absolutePath];
+            
+            // Escape for JSON and HTML
+            const pathsJson = JSON.stringify(pathsToTry).replace(/'/g, "\\'");
+            const safeFilename = filename.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            
+            return `
+              <div class="message-image">
+                <img src="${relativePath}" 
+                     alt="${img.alt || 'Image'}" 
+                     loading="lazy"
+                     data-paths='${pathsJson}'
+                     data-current-index="0"
+                     data-original-path="${safeFilename}"
+                     onerror="
+                       (function() {
+                         const imgEl = this;
+                         try {
+                           const paths = JSON.parse(imgEl.dataset.paths || '[]');
+                           const currentIdx = parseInt(imgEl.dataset.currentIndex || '0');
+                           console.error('Image failed. Tried:', paths[currentIdx]);
+                           console.error('Full URL:', window.location.origin + (paths[currentIdx].startsWith('/') ? paths[currentIdx] : '/' + paths[currentIdx]));
+                           if (currentIdx < paths.length - 1) {
+                             imgEl.dataset.currentIndex = (currentIdx + 1).toString();
+                             console.log('Trying fallback:', paths[currentIdx + 1]);
+                             imgEl.src = paths[currentIdx + 1];
+                           } else {
+                             console.error('All paths failed:', paths);
+                             imgEl.style.display='none';
+                             const fallback = document.createElement('div');
+                             fallback.style.cssText = 'padding:20px;text-align:center;color:#888;font-size:12px;';
+                             fallback.textContent = 'Image: ' + (imgEl.dataset.originalPath || 'not found');
+                             if (imgEl.parentElement) {
+                               imgEl.parentElement.appendChild(fallback);
+                             }
+                           }
+                         } catch(e) {
+                           console.error('Error in onerror handler:', e);
+                         }
+                       }).call(this);
+                     " />
+              </div>
+            `;
+          }
+          return '';
+        }).join('');
+      }
+
+      // Handle Instagram links - embed them like Instagram does
+      let attachmentsHtml = '';
+      if (message.attachments && message.attachments.length > 0) {
+        attachmentsHtml = message.attachments.map(att => {
+          const url = att.url;
+          // Check if it's an Instagram post/reel
+          if (url.includes('instagram.com')) {
+            // Extract username and post type from URL
+            let username = '';
+            let postType = 'post';
+            let displayText = '';
+            
+            // Try to extract username from the message text or URL
+            if (att.text && att.text !== url) {
+              displayText = att.text;
+            }
+            
+            // Check if it's a reel
+            if (url.includes('/reel/')) {
+              postType = 'reel';
+            } else if (url.includes('/p/')) {
+              postType = 'post';
+            }
+            
+            // Extract username from message if available
+            const messageText = message.message || '';
+            const usernameMatch = messageText.match(/@?(\w+)/);
+            if (usernameMatch) {
+              username = usernameMatch[1];
+            }
+            
+            // Extract post/reel ID for embed
+            let postId = '';
+            let embedUrl = '';
+            const postMatch = url.match(/\/(p|reel)\/([A-Za-z0-9_-]+)/);
+            if (postMatch) {
+              postId = postMatch[2];
+              const postType = postMatch[1]; // 'p' or 'reel'
+              // Create Instagram embed URL
+              embedUrl = `https://www.instagram.com/${postType}/${postId}/embed/`;
+            }
+            
+            // Generate unique ID for this embed
+            const embedId = 'ig-embed-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            
+            return `
+              <div class="message-instagram-link">
+                <a href="${url}" target="_blank" rel="noopener" class="instagram-embed-link">
+                  <div class="instagram-link-preview">
+                    <div class="instagram-link-header">
+                      <div class="instagram-link-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                      </div>
+                      <div class="instagram-link-text">
+                        <div class="instagram-link-title">${displayText || (username ? `@${username}` : 'Instagram')} ${postType === 'reel' ? 'Reel' : 'Post'}</div>
+                        <div class="instagram-link-url">instagram.com</div>
+                      </div>
+                    </div>
+                    <div class="instagram-link-preview-image" id="${embedId}">
+                      ${embedUrl ? `
+                        <iframe src="${embedUrl}" frameborder="0" scrolling="no" allowtransparency="true" allow="encrypted-media" style="width:100%;min-height:400px;max-height:600px;border:none;overflow:hidden;" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"></iframe>
+                        <div class="embed-fallback" style="display:none;">Tap to view on Instagram</div>
+                      ` : '<div class="embed-fallback">Tap to view on Instagram</div>'}
+                    </div>
+                    <div class="instagram-link-footer">View on Instagram</div>
+                  </div>
+                </a>
+              </div>
+            `;
+          } else {
+            return `
+              <div class="message-attachment">
+                <a href="${url}" target="_blank" rel="noopener">${att.text || url}</a>
+              </div>
+            `;
+          }
+        }).join('');
+      }
+
+      let reactionsHtml = '';
+      if (message.reactions && message.reactions.length > 0) {
+        reactionsHtml = `<div class="message-reactions">${message.reactions.join(', ')}</div>`;
+      }
+
+      messageDiv.innerHTML = `
+        ${avatar}
+        <div class="message-content">
+          ${message.message ? `<div class="message-text">${escapeHtml(message.message)}</div>` : ''}
+          ${imagesHtml}
+          ${attachmentsHtml}
+          ${reactionsHtml}
+          ${message.timestamp ? `<div class="message-timestamp">${message.timestamp}</div>` : ''}
+        </div>
+      `;
+
+      return messageDiv;
+    }
+
+    function loadOlderMessages() {
+      const totalMessages = currentMessages.length;
+      if (displayedCount >= totalMessages) {
+        return; // All messages already loaded
+      }
+
+      const messagesContainer = document.getElementById('messagesContainer');
+      const previousScrollHeight = messagesContainer.scrollHeight;
+      displayedCount = Math.min(displayedCount + MESSAGES_PER_LOAD, totalMessages);
+      renderMessages(true); // Append mode
+      
+      // Maintain scroll position after loading older messages
+      setTimeout(() => {
+        const newScrollHeight = messagesContainer.scrollHeight;
+        messagesContainer.scrollTop = newScrollHeight - previousScrollHeight;
+      }, 0);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    let isLoadingOlder = false;
+
+    // Set up scroll handler for infinite scroll
+    document.addEventListener('DOMContentLoaded', () => {
+      const messagesContainer = document.getElementById('messagesContainer');
+      if (messagesContainer) {
+        messagesContainer.addEventListener('scroll', function() {
+          // Load older messages when user scrolls near the top
+          if (this.scrollTop < 100 && !isLoadingOlder && currentMessages && currentMessages.length > displayedCount) {
+            isLoadingOlder = true;
+            loadOlderMessages();
+            setTimeout(() => {
+              isLoadingOlder = false;
+            }, 500);
+          }
+        });
+      }
+    });
+
+    // Auto-open first chat
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (chatsData) {
+          const firstChatKey = Object.keys(chatsData)[0];
+          const firstChat = chatsData[firstChatKey];
+          const firstChatItem = document.querySelector('.chat-item');
+          openChat(firstChatKey, firstChat, firstChatItem);
+        }
+      }, 100);
+    });
+  </script>
+</body>
+</html>
