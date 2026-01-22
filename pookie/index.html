@@ -1106,6 +1106,7 @@
     let displayedCount = 500; // Start with last 500 messages
     const MESSAGES_PER_LOAD = 500; // Load 500 more at a time
     let isLoadingOlder = false; // Prevent multiple simultaneous loads
+    let autoLoadInterval = null; // Interval for auto-loading messages
     let currentViewUser = null; // Current user perspective (null = default view)
     let searchQuery = '';
     let searchResults = []; // Array of message indices that match search (from all messages)
@@ -1267,7 +1268,7 @@
     function openChat(chatKey, chat, element) {
       currentChat = chatKey;
       displayedCount = 500; // Reset to last 500 messages
-      isLoadingOlder = false;
+      stopAutoLoading(); // Stop any existing auto-loading
       currentViewUser = null; // Reset view user
       searchQuery = ''; // Reset search
       document.getElementById('searchInput').value = '';
@@ -1307,6 +1308,44 @@
 
       // Clear search when switching chats
       clearSearch();
+
+      // Start auto-loading messages sequentially
+      startAutoLoading();
+    }
+
+    function startAutoLoading() {
+      // Clear any existing auto-load interval
+      if (autoLoadInterval) {
+        clearInterval(autoLoadInterval);
+        autoLoadInterval = null;
+      }
+
+      // Start auto-loading messages one batch at a time
+      autoLoadInterval = setInterval(() => {
+        const filteredMessages = getFilteredMessages();
+        const totalMessages = filteredMessages.length;
+        
+        // Stop if all messages are loaded
+        if (displayedCount >= totalMessages) {
+          clearInterval(autoLoadInterval);
+          autoLoadInterval = null;
+          isLoadingOlder = false;
+          return;
+        }
+
+        // Load next batch if not already loading
+        if (!isLoadingOlder) {
+          loadOlderMessages();
+        }
+      }, 500); // Load every 500ms for smooth sequential loading
+    }
+
+    function stopAutoLoading() {
+      if (autoLoadInterval) {
+        clearInterval(autoLoadInterval);
+        autoLoadInterval = null;
+      }
+      isLoadingOlder = false;
     }
 
     function getFilteredMessages() {
@@ -1395,24 +1434,7 @@
       }, 0);
     }
 
-    function checkScrollAndAutoLoad() {
-      const container = document.getElementById('messagesContainer');
-      if (!container || isLoadingOlder) return;
-      
-      const filteredMessages = getFilteredMessages();
-      const totalMessages = filteredMessages.length;
-      
-      // Auto-load when user scrolls near the top and there are more messages
-      if (displayedCount < totalMessages) {
-        const scrollTop = container.scrollTop;
-        const threshold = 300; // Load when within 300px of top
-        
-        if (scrollTop <= threshold) {
-          isLoadingOlder = true;
-          loadOlderMessages();
-        }
-      }
-    }
+    // Removed checkScrollAndAutoLoad - using sequential auto-loading instead
 
     function loadOlderMessages() {
       const filteredMessages = getFilteredMessages();
@@ -1437,11 +1459,7 @@
         container.scrollTop = previousScrollTop + scrollDifference;
         
         isLoadingOlder = false;
-        
-        // Check if we need to load more (user might still be near top)
-        setTimeout(() => {
-          checkScrollAndAutoLoad();
-        }, 100);
+        // Auto-loading will continue via interval
       });
     }
 
@@ -2061,17 +2079,7 @@
         });
       }
 
-      // Set up scroll listener for auto-loading messages
-      const messagesContainer = document.getElementById('messagesContainer');
-      if (messagesContainer) {
-        let scrollTimeout;
-        messagesContainer.addEventListener('scroll', () => {
-          clearTimeout(scrollTimeout);
-          scrollTimeout = setTimeout(() => {
-            checkScrollAndAutoLoad();
-          }, 150); // Debounce to avoid too many checks
-        });
-      }
+      // Removed scroll-based auto-loading - using sequential auto-loading instead
 
       // Set up back button for mobile
       const backButton = document.getElementById('backButton');
