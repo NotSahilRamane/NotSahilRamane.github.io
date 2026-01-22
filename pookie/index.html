@@ -133,6 +133,126 @@
       align-items: center;
       gap: 12px;
       background: #121212;
+      justify-content: space-between;
+    }
+
+    .chat-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-button {
+      background: transparent;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      width: 36px;
+      height: 36px;
+    }
+
+    .header-button:hover {
+      background: #262626;
+    }
+
+    .header-button svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .search-input {
+      background: #262626;
+      border: 1px solid #363636;
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #fff;
+      font-size: 14px;
+      width: 200px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: #0095f6;
+    }
+
+    .search-input::placeholder {
+      color: #a8a8a8;
+    }
+
+    .user-view-dropdown {
+      position: relative;
+    }
+
+    .user-view-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 8px;
+      background: #1a1a1a;
+      border: 1px solid #262626;
+      border-radius: 8px;
+      min-width: 200px;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+
+    .user-view-menu.show {
+      display: block;
+    }
+
+    .user-view-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-view-item:hover {
+      background: #262626;
+    }
+
+    .user-view-item.active {
+      background: #0095f6;
+      color: #fff;
+    }
+
+    .user-view-item-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-view-item-avatar img,
+    .user-view-item-avatar > div {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .chat-header-avatar {
@@ -355,8 +475,8 @@
 
     .instagram-link-preview-image {
       width: 100%;
-      min-height: 400px;
-      max-height: 600px;
+      min-height: 240px;
+      max-height: 360px;
       background: #1a1a1a;
       display: flex;
       align-items: center;
@@ -377,8 +497,8 @@
 
     .instagram-link-preview-image iframe {
       width: 100%;
-      min-height: 400px;
-      max-height: 600px;
+      min-height: 240px;
+      max-height: 360px;
       border: none;
       background: transparent;
       position: relative;
@@ -481,9 +601,304 @@
     .message.system {
       display: none;
     }
+
+    /* Mobile back button */
+    .back-button {
+      display: none;
+      background: transparent;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      width: 40px;
+      height: 40px;
+      margin-right: 8px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .back-button svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+    }
+
+    .back-button:active {
+      background: #262626;
+    }
+
+    /* Sidebar overlay for mobile */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar-overlay.show {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Mobile responsive styles */
+    @media (max-width: 768px) {
+      body {
+        overflow: hidden;
+      }
+
+      .container {
+        position: relative;
+        max-width: 100%;
+      }
+
+      /* Sidebar - hidden by default on mobile, shown as overlay */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .sidebar.show {
+        transform: translateX(0);
+      }
+
+      .sidebar-overlay {
+        display: block;
+      }
+
+      .sidebar-header {
+        padding: 16px;
+      }
+
+      .sidebar-header h1 {
+        font-size: 20px;
+      }
+
+      .chat-item {
+        padding: 14px 16px;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      .chat-item:active {
+        background: #262626;
+      }
+
+      .chat-avatar {
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+      }
+
+      /* Chat area - full width on mobile */
+      .chat-area {
+        width: 100%;
+      }
+
+      .chat-header {
+        padding: 12px 16px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .chat-header-left {
+        gap: 8px;
+      }
+
+      .chat-header-name {
+        font-size: 15px;
+      }
+
+      .back-button {
+        display: flex;
+      }
+
+      .header-button {
+        width: 40px;
+        height: 40px;
+        padding: 10px;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      .header-button:active {
+        background: #262626;
+      }
+
+      .header-button svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .chat-header {
+        position: relative;
+      }
+
+      .search-input {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        border-top: 1px solid #262626;
+        padding: 12px 16px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        z-index: 10;
+      }
+
+      .chat-header-right {
+        gap: 4px;
+      }
+
+      /* User view menu - full width on mobile */
+      .user-view-menu {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 50vh;
+        border-radius: 16px 16px 0 0;
+        margin: 0;
+        width: 100%;
+      }
+
+      .user-view-item {
+        padding: 16px;
+        min-height: 56px; /* Touch target size */
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      .user-view-item:active {
+        background: #363636;
+      }
+
+      .user-view-item-avatar {
+        width: 32px;
+        height: 32px;
+      }
+
+      /* Messages container */
+      .messages-container {
+        padding: 12px;
+        gap: 6px;
+      }
+
+      .message {
+        max-width: 85%;
+      }
+
+      .message-content {
+        padding: 10px 14px;
+        font-size: 15px;
+      }
+
+      .message-text {
+        font-size: 15px;
+      }
+
+      .message-avatar {
+        width: 32px;
+        height: 32px;
+      }
+
+      .message-image {
+        max-width: 100%;
+      }
+
+      .message-image img {
+        border-radius: 12px;
+      }
+
+      /* Instagram link preview - smaller on mobile */
+      .instagram-link-preview-image {
+        min-height: 200px;
+        max-height: 300px;
+      }
+
+      .instagram-link-preview-image iframe {
+        min-height: 200px;
+        max-height: 300px;
+      }
+
+      /* Chat list items - larger touch targets */
+      .chat-item {
+        min-height: 64px;
+      }
+
+      /* Scrollbar - thinner on mobile */
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+    }
+
+    /* Small mobile devices */
+    @media (max-width: 480px) {
+      .sidebar-header {
+        padding: 12px;
+      }
+
+      .sidebar-header h1 {
+        font-size: 18px;
+      }
+
+      .chat-header {
+        padding: 10px 12px;
+      }
+
+      .chat-header-name {
+        font-size: 14px;
+      }
+
+      .messages-container {
+        padding: 10px;
+      }
+
+      .message {
+        max-width: 90%;
+      }
+
+      .message-content {
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+
+      .chat-item {
+        padding: 12px;
+      }
+
+      .chat-avatar {
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
   <div class="container">
     <!-- Sidebar -->
     <div class="sidebar">
@@ -498,8 +913,35 @@
     <!-- Main chat area -->
     <div class="chat-area">
       <div class="chat-header" id="chatHeader" style="display: none;">
-        <div class="chat-header-avatar" id="chatHeaderAvatar"></div>
-        <div class="chat-header-name" id="chatHeaderName"></div>
+        <div class="chat-header-left">
+          <button class="back-button" id="backButton" title="Back to chats">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <div class="chat-header-avatar" id="chatHeaderAvatar"></div>
+          <div class="chat-header-name" id="chatHeaderName"></div>
+        </div>
+        <div class="chat-header-right">
+          <div class="user-view-dropdown">
+            <button class="header-button" id="userViewButton" title="Switch view">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </button>
+            <div class="user-view-menu" id="userViewMenu"></div>
+          </div>
+          <button class="header-button" id="searchButton" title="Search messages">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
+          <input type="text" class="search-input" id="searchInput" placeholder="Search messages..." style="display: none;">
+        </div>
       </div>
       <div class="messages-container" id="messagesContainer">
         <div class="empty-state">Select a chat to view messages</div>
@@ -513,6 +955,8 @@
     let currentMessages = [];
     let displayedCount = 500; // Start with last 500 messages
     const MESSAGES_PER_LOAD = 200; // Load 200 more at a time
+    let currentViewUser = null; // Current user perspective (null = default view)
+    let searchQuery = '';
 
     // Profile picture mapping for chats
     const chatProfilePictures = {
@@ -638,9 +1082,44 @@
       });
     }
 
+    function isMobile() {
+      return window.innerWidth <= 768;
+    }
+
+    function showSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      if (sidebar) {
+        sidebar.classList.add('show');
+      }
+      if (overlay && isMobile()) {
+        overlay.classList.add('show');
+      }
+    }
+
+    function hideSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      if (sidebar) {
+        sidebar.classList.remove('show');
+      }
+      if (overlay) {
+        overlay.classList.remove('show');
+      }
+    }
+
     function openChat(chatKey, chat, element) {
       currentChat = chatKey;
       displayedCount = 500; // Reset to last 500 messages
+      currentViewUser = null; // Reset view user
+      searchQuery = ''; // Reset search
+      document.getElementById('searchInput').value = '';
+      document.getElementById('searchInput').style.display = 'none';
+      
+      // Hide sidebar on mobile when opening chat
+      if (isMobile()) {
+        hideSidebar();
+      }
       
       // Update active state
       document.querySelectorAll('.chat-item').forEach(item => {
@@ -660,29 +1139,82 @@
         .filter(msg => !isSystemMessage(msg))
         .reverse(); // Reverse so newest is at end
 
+      // Update user view menu
+      updateUserViewMenu();
+
       // Render messages
       renderMessages();
+      
+      // Re-attach scroll handler
+      scrollHandlerAttached = false;
+      setTimeout(() => {
+        attachScrollHandler();
+      }, 100);
+    }
+
+    function getFilteredMessages() {
+      if (!currentMessages || currentMessages.length === 0) {
+        return [];
+      }
+
+      let filtered = currentMessages;
+
+      // Apply user view filter
+      if (currentViewUser) {
+        filtered = filtered.map(msg => {
+          // Create a copy of the message with adjusted is_sent flag
+          const adjustedMsg = { ...msg };
+          adjustedMsg.is_sent = (msg.sender === currentViewUser);
+          return adjustedMsg;
+        });
+      }
+
+      // Apply search filter
+      if (searchQuery && searchQuery.trim()) {
+        const query = searchQuery.toLowerCase().trim();
+        filtered = filtered.filter(msg => {
+          if (msg.message && msg.message.toLowerCase().includes(query)) {
+            return true;
+          }
+          if (msg.sender && msg.sender.toLowerCase().includes(query)) {
+            return true;
+          }
+          if (msg.attachments && msg.attachments.some(att => 
+            (att.text && att.text.toLowerCase().includes(query)) ||
+            (att.url && att.url.toLowerCase().includes(query))
+          )) {
+            return true;
+          }
+          return false;
+        });
+      }
+
+      return filtered;
     }
 
     function renderMessages(append = false) {
       const container = document.getElementById('messagesContainer');
       
-      if (!currentMessages || currentMessages.length === 0) {
+      const filteredMessages = getFilteredMessages();
+      
+      if (!filteredMessages || filteredMessages.length === 0) {
         if (!append) {
-          container.innerHTML = '<div class="empty-state">No messages</div>';
+          container.innerHTML = '<div class="empty-state">' + 
+            (searchQuery ? 'No messages found' : 'No messages') + 
+            '</div>';
         }
         return;
       }
 
       // Get messages to display (from the end, showing most recent)
-      const totalMessages = currentMessages.length;
+      const totalMessages = filteredMessages.length;
       const startIndex = Math.max(0, totalMessages - displayedCount);
-      const messagesToShow = currentMessages.slice(startIndex);
+      const messagesToShow = filteredMessages.slice(startIndex);
 
       // If appending (loading older messages), prepend them
       if (append) {
         const previousStartIndex = Math.max(0, totalMessages - (displayedCount - MESSAGES_PER_LOAD));
-        const newMessages = currentMessages.slice(previousStartIndex, startIndex);
+        const newMessages = filteredMessages.slice(previousStartIndex, startIndex);
         
         const fragment = document.createDocumentFragment();
         newMessages.forEach((message) => {
@@ -708,7 +1240,9 @@
 
       // Scroll to bottom (or maintain scroll position if loading older messages)
       if (!append) {
-        container.scrollTop = container.scrollHeight;
+        setTimeout(() => {
+          container.scrollTop = container.scrollHeight;
+        }, 0);
       }
     }
 
@@ -874,7 +1408,7 @@
                     </div>
                     <div class="instagram-link-preview-image" id="${embedId}">
                       ${embedUrl ? `
-                        <iframe src="${embedUrl}" frameborder="0" scrolling="no" allowtransparency="true" allow="encrypted-media" style="width:100%;min-height:400px;max-height:600px;border:none;overflow:hidden;" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"></iframe>
+                        <iframe src="${embedUrl}" frameborder="0" scrolling="no" allowtransparency="true" allow="encrypted-media" style="width:100%;min-height:240px;max-height:360px;border:none;overflow:hidden;" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"></iframe>
                         <div class="embed-fallback" style="display:none;">Tap to view on Instagram</div>
                       ` : '<div class="embed-fallback">Tap to view on Instagram</div>'}
                     </div>
@@ -913,21 +1447,87 @@
     }
 
     function loadOlderMessages() {
-      const totalMessages = currentMessages.length;
+      const filteredMessages = getFilteredMessages();
+      const totalMessages = filteredMessages.length;
       if (displayedCount >= totalMessages) {
         return; // All messages already loaded
       }
 
       const messagesContainer = document.getElementById('messagesContainer');
       const previousScrollHeight = messagesContainer.scrollHeight;
+      const previousScrollTop = messagesContainer.scrollTop;
       displayedCount = Math.min(displayedCount + MESSAGES_PER_LOAD, totalMessages);
       renderMessages(true); // Append mode
       
       // Maintain scroll position after loading older messages
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         const newScrollHeight = messagesContainer.scrollHeight;
-        messagesContainer.scrollTop = newScrollHeight - previousScrollHeight;
-      }, 0);
+        messagesContainer.scrollTop = previousScrollTop + (newScrollHeight - previousScrollHeight);
+      });
+    }
+
+    function getAllUsersInChat() {
+      if (!currentMessages || currentMessages.length === 0) {
+        return [];
+      }
+      const users = new Set();
+      currentMessages.forEach(msg => {
+        if (msg.sender) {
+          users.add(msg.sender);
+        }
+      });
+      return Array.from(users).sort();
+    }
+
+    function updateUserViewMenu() {
+      const menu = document.getElementById('userViewMenu');
+      const users = getAllUsersInChat();
+      
+      menu.innerHTML = '';
+      
+      // Add "Default View" option
+      const defaultItem = document.createElement('div');
+      defaultItem.className = `user-view-item ${!currentViewUser ? 'active' : ''}`;
+      defaultItem.innerHTML = `
+        <div class="user-view-item-avatar" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 10px; font-weight: 600;">ALL</div>
+        <span>Default View</span>
+      `;
+      defaultItem.onclick = () => {
+        currentViewUser = null;
+        displayedCount = 500;
+        updateUserViewMenu();
+        renderMessages();
+        // Close menu on mobile after selection
+        if (isMobile()) {
+          userViewMenu.classList.remove('show');
+        }
+      };
+      menu.appendChild(defaultItem);
+      
+      // Add user options
+      users.forEach(user => {
+        const item = document.createElement('div');
+        item.className = `user-view-item ${currentViewUser === user ? 'active' : ''}`;
+        // Get avatar HTML and adjust size to 24px for menu
+        let avatarHtml = getAvatarHtml(null, user, 'small');
+        // Replace size in avatar HTML to match menu size
+        avatarHtml = avatarHtml.replace(/width:\s*28px/g, 'width: 24px').replace(/height:\s*28px/g, 'height: 24px');
+        item.innerHTML = `
+          <div class="user-view-item-avatar">${avatarHtml}</div>
+          <span>${escapeHtml(user)}</span>
+        `;
+        item.onclick = () => {
+          currentViewUser = user;
+          displayedCount = 500;
+          updateUserViewMenu();
+          renderMessages();
+          // Close menu on mobile after selection
+          if (isMobile()) {
+            userViewMenu.classList.remove('show');
+          }
+        };
+        menu.appendChild(item);
+      });
     }
 
     function escapeHtml(text) {
@@ -937,32 +1537,143 @@
     }
 
     let isLoadingOlder = false;
+    let scrollHandlerAttached = false;
 
-    // Set up scroll handler for infinite scroll
-    document.addEventListener('DOMContentLoaded', () => {
+    function attachScrollHandler() {
       const messagesContainer = document.getElementById('messagesContainer');
-      if (messagesContainer) {
+      if (messagesContainer && !scrollHandlerAttached) {
         messagesContainer.addEventListener('scroll', function() {
+          const filteredMessages = getFilteredMessages();
           // Load older messages when user scrolls near the top
-          if (this.scrollTop < 100 && !isLoadingOlder && currentMessages && currentMessages.length > displayedCount) {
+          if (this.scrollTop < 200 && !isLoadingOlder && filteredMessages && filteredMessages.length > displayedCount) {
             isLoadingOlder = true;
             loadOlderMessages();
             setTimeout(() => {
               isLoadingOlder = false;
-            }, 500);
+            }, 300);
+          }
+        });
+        scrollHandlerAttached = true;
+      }
+    }
+
+    // Set up scroll handler for infinite scroll
+    document.addEventListener('DOMContentLoaded', () => {
+      attachScrollHandler();
+    });
+
+    // Set up search functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchButton = document.getElementById('searchButton');
+      const searchInput = document.getElementById('searchInput');
+      
+      if (searchButton && searchInput) {
+        searchButton.addEventListener('click', () => {
+          if (searchInput.style.display === 'none' || !searchInput.style.display) {
+            searchInput.style.display = 'block';
+            searchInput.focus();
+          } else {
+            searchInput.style.display = 'none';
+            searchQuery = '';
+            searchInput.value = '';
+            displayedCount = 500;
+            renderMessages();
+          }
+        });
+
+        searchInput.addEventListener('input', (e) => {
+          searchQuery = e.target.value;
+          displayedCount = 500;
+          renderMessages();
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            searchInput.style.display = 'none';
+            searchQuery = '';
+            searchInput.value = '';
+            displayedCount = 500;
+            renderMessages();
           }
         });
       }
+
+      // Set up user view button
+      const userViewButton = document.getElementById('userViewButton');
+      const userViewMenu = document.getElementById('userViewMenu');
+      
+      if (userViewButton && userViewMenu) {
+        userViewButton.addEventListener('click', (e) => {
+          e.stopPropagation();
+          userViewMenu.classList.toggle('show');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!userViewButton.contains(e.target) && !userViewMenu.contains(e.target)) {
+            userViewMenu.classList.remove('show');
+          }
+        });
+      }
+
+      // Set up back button for mobile
+      const backButton = document.getElementById('backButton');
+      if (backButton) {
+        backButton.addEventListener('click', () => {
+          // Hide chat header and show sidebar
+          document.getElementById('chatHeader').style.display = 'none';
+          document.getElementById('messagesContainer').innerHTML = '<div class="empty-state">Select a chat to view messages</div>';
+          showSidebar();
+        });
+      }
+
+      // Set up sidebar overlay click to close
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', () => {
+          hideSidebar();
+        });
+      }
+
+      // Show sidebar on mobile when page loads (if no chat is open)
+      if (isMobile()) {
+        showSidebar();
+      }
+
+      // Handle window resize
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          // If switching to desktop, ensure sidebar is visible
+          if (!isMobile()) {
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+              sidebar.classList.remove('show');
+              sidebar.style.transform = '';
+            }
+          } else {
+            // If switching to mobile and no chat is open, show sidebar
+            const chatHeader = document.getElementById('chatHeader');
+            if (chatHeader && chatHeader.style.display === 'none') {
+              showSidebar();
+            }
+          }
+        }, 250);
+      });
     });
 
-    // Auto-open first chat
+    // Auto-open first chat (only on desktop)
     window.addEventListener('load', () => {
       setTimeout(() => {
-        if (chatsData) {
+        if (chatsData && !isMobile()) {
           const firstChatKey = Object.keys(chatsData)[0];
           const firstChat = chatsData[firstChatKey];
           const firstChatItem = document.querySelector('.chat-item');
           openChat(firstChatKey, firstChat, firstChatItem);
+        } else if (chatsData && isMobile()) {
+          // On mobile, show sidebar by default
+          showSidebar();
         }
       }, 100);
     });

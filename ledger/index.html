@@ -155,10 +155,10 @@
   =============================== */
   function deduct() {
     const amount = parseFloat(document.getElementById("deductAmount").value);
-    if (!amount || amount <= 0) {
-      updateUI("No deduction made.");
-      return;
-    }
+    // if (!amount || amount <= 0) {
+    //   updateUI("No deduction made.");
+    //   return;
+    // }
 
     state.balance -= amount;
     if (state.balance < 0) state.balance = 0;
