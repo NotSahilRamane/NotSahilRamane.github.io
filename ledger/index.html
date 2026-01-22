@@ -21,17 +21,8 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 6px;
-    }
-
-    .sub {
-      text-align: center;
-      font-size: 0.85rem;
-      opacity: 0.7;
-      margin-bottom: 16px;
-    }
+    h1 { text-align: center; margin-bottom: 6px; }
+    .sub { text-align: center; font-size: 0.85rem; opacity: 0.7; }
 
     .amount {
       font-size: 2rem;
@@ -40,12 +31,7 @@
       margin: 12px 0;
     }
 
-    label {
-      display: block;
-      margin-top: 12px;
-      font-weight: 600;
-    }
-
+    label { display: block; margin-top: 12px; font-weight: 600; }
     input {
       width: 100%;
       padding: 10px;
@@ -68,28 +54,24 @@
     .share  { background: #ff6f91; color: #fff; }
     .reset  { background: #888; color: #fff; }
 
-    .msg {
-      text-align: center;
-      margin-top: 10px;
-      font-style: italic;
-    }
+    .msg { text-align: center; margin-top: 10px; font-style: italic; }
   </style>
 </head>
 <body>
 
 <div class="box">
   <h1>💸 Debt Tracker</h1>
-  <div class="sub">Simple interest • emotionally binding</div>
+  <div class="sub">Simple interest • lightly encrypted</div>
 
   <div class="amount">₹<span id="balance">0</span></div>
   <div class="msg" id="message"></div>
 
   <label>Amount to deduct (₹)</label>
-  <input type="number" id="deductAmount" min="0" step="1" placeholder="e.g. 200">
+  <input type="number" id="deductAmount" step="1">
 
   <button class="deduct" onclick="deduct()">Deduct amount</button>
-  <button class="share" onclick="shareLink()">Copy shareable link 🔗</button>
-  <button class="reset" onclick="resetAll()">Reset (forgiveness ritual)</button>
+  <button class="share" onclick="shareLink()">Copy shareable link 🔐</button>
+  <button class="reset" onclick="resetAll()">Reset</button>
 </div>
 
 <script>
@@ -97,21 +79,41 @@
      CONFIG
   =============================== */
   const INITIAL_PRINCIPAL = 1800;
-  const RATE = 0.098; // 9.8% weekly simple interest
+  const RATE = 0.098; // weekly simple interest
   const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+  const SECRET = "she_was_right"; // obfuscation key
+
+  /* ===============================
+     LIGHT ENCRYPTION
+  =============================== */
+  function xor(str, key) {
+    return [...str].map((c, i) =>
+      String.fromCharCode(
+        c.charCodeAt(0) ^ key.charCodeAt(i % key.length)
+      )
+    ).join("");
+  }
+
+  function encrypt(obj) {
+    const json = JSON.stringify(obj);
+    return btoa(xor(json, SECRET));
+  }
+
+  function decrypt(str) {
+    try {
+      return JSON.parse(xor(atob(str), SECRET));
+    } catch {
+      return null;
+    }
+  }
 
   /* ===============================
      STATE HANDLING
   =============================== */
   function getURLState() {
     const p = new URLSearchParams(window.location.search);
-    if (!p.has("b")) return null;
-
-    return {
-      principal: parseFloat(p.get("p")) || INITIAL_PRINCIPAL,
-      balance: parseFloat(p.get("b")) || INITIAL_PRINCIPAL,
-      lastInterest: parseInt(p.get("t")) || Date.now()
-    };
+    if (!p.has("d")) return null;
+    return decrypt(p.get("d"));
   }
 
   function loadState() {
@@ -121,36 +123,30 @@
       return urlState;
     }
 
+    const stored = localStorage.getItem("state");
+    if (stored) return decrypt(stored);
+
     return {
-      principal: parseFloat(localStorage.getItem("principal")) || INITIAL_PRINCIPAL,
-      balance: parseFloat(localStorage.getItem("balance")) || INITIAL_PRINCIPAL,
-      lastInterest: parseInt(localStorage.getItem("lastInterest")) || Date.now()
+      principal: INITIAL_PRINCIPAL,
+      balance: INITIAL_PRINCIPAL,
+      lastInterest: Date.now()
     };
   }
 
   function saveState(state) {
-    localStorage.setItem("principal", state.principal);
-    localStorage.setItem("balance", state.balance);
-    localStorage.setItem("lastInterest", state.lastInterest);
+    localStorage.setItem("state", encrypt(state));
   }
 
   /* ===============================
-     INTEREST LOGIC (AUTOMATIC)
+     INTEREST (AUTO)
   =============================== */
   function applySimpleInterest(state) {
     const now = Date.now();
+    const weeks = Math.floor((now - state.lastInterest) / WEEK_MS);
 
-    // Number of full weeks elapsed since last interest calculation
-    const elapsedWeeks = Math.floor(
-      (now - state.lastInterest) / WEEK_MS
-    );
-
-    if (elapsedWeeks > 0) {
-      const interest =
-        state.principal * RATE * elapsedWeeks;
-
-      state.balance += interest;
-      state.lastInterest += elapsedWeeks * WEEK_MS;
+    if (weeks > 0) {
+      state.balance += state.principal * RATE * weeks;
+      state.lastInterest += weeks * WEEK_MS;
     }
   }
 
@@ -158,12 +154,9 @@
      UI ACTIONS
   =============================== */
   function deduct() {
-    const amount = parseFloat(
-      document.getElementById("deductAmount").value
-    );
-
+    const amount = parseFloat(document.getElementById("deductAmount").value);
     if (!amount || amount <= 0) {
-      updateUI("No deduction made. Debt remains.");
+      updateUI("No deduction made.");
       return;
     }
 
@@ -171,25 +164,20 @@
     if (state.balance < 0) state.balance = 0;
 
     saveState(state);
-    updateUI(`₹${amount} deducted. Temporary relief granted.`);
+    updateUI(`₹${amount} deducted.`);
   }
 
   function shareLink() {
-    const params = new URLSearchParams({
-      p: state.principal.toFixed(2),
-      b: state.balance.toFixed(2),
-      t: state.lastInterest
-    });
-
-    const url = `${location.origin}${location.pathname}?${params}`;
+    const data = encrypt(state);
+    const url = `${location.origin}${location.pathname}?d=${encodeURIComponent(data)}`;
     navigator.clipboard.writeText(url);
-    updateUI("Link copied. Evidence exported.");
+    updateUI("Encrypted link copied.");
   }
 
   function resetAll() {
     localStorage.clear();
     state = loadState();
-    updateUI("Debt reset. Memory erased.");
+    updateUI("Debt reset.");
   }
 
   function updateUI(msg = "") {
@@ -200,11 +188,11 @@
   }
 
   function banter(balance) {
-    if (balance === 0) return "Debt cleared. Emotional audit pending.";
+    if (balance === 0) return "Debt cleared.";
     if (balance < 500) return "Almost forgiven.";
-    if (balance < 1500) return "Debt acceptable. Attitude not.";
-    if (balance < 3000) return "Interest growing. Patience shrinking.";
-    return "This link is now evidence.";
+    if (balance < 1500) return "Debt acceptable.";
+    if (balance < 3000) return "Interest accumulating.";
+    return "This link is encrypted evidence.";
   }
 
   /* ===============================
