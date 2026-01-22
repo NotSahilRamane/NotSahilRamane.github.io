@@ -650,6 +650,35 @@
       font-size: 12px;
     }
 
+    .load-more-button {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 12px 0;
+      background: #262626;
+      border: 1px solid #363636;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      text-align: center;
+    }
+
+    .load-more-button:hover {
+      background: #363636;
+      border-color: #464646;
+    }
+
+    .load-more-button:active {
+      background: #1a1a1a;
+    }
+
+    .load-more-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     /* Scrollbar styling */
     ::-webkit-scrollbar {
       width: 8px;
@@ -1073,10 +1102,12 @@
   <script>
     let chatsData = null;
     let currentChat = null;
-    let currentMessages = [];
+    let currentMessages = []; // All messages in memory
+    let displayedCount = 1000; // Start with last 1000 messages
+    const MESSAGES_PER_LOAD = 1000; // Load 1000 more at a time
     let currentViewUser = null; // Current user perspective (null = default view)
     let searchQuery = '';
-    let searchResults = []; // Array of message elements that match search
+    let searchResults = []; // Array of message indices that match search (from all messages)
     let currentSearchIndex = -1; // Current highlighted search result
 
     // Profile picture mapping for chats
@@ -1234,6 +1265,7 @@
 
     function openChat(chatKey, chat, element) {
       currentChat = chatKey;
+      displayedCount = 1000; // Reset to last 1000 messages
       currentViewUser = null; // Reset view user
       searchQuery = ''; // Reset search
       document.getElementById('searchInput').value = '';
@@ -1252,7 +1284,7 @@
         element.classList.add('active');
       }
 
-      // Filter and store all messages
+      // Filter and store all messages in memory
       currentMessages = (chat.messages || [])
         .filter(msg => !isSystemMessage(msg))
         .reverse(); // Reverse so newest is at end
@@ -1268,7 +1300,7 @@
       // Update user view menu
       updateUserViewMenu();
 
-      // Render all messages at once
+      // Render initial messages
       renderMessages();
 
       // Clear search when switching chats
@@ -1296,26 +1328,77 @@
       return filtered;
     }
 
-    function renderMessages() {
+    function renderMessages(append = false) {
       const container = document.getElementById('messagesContainer');
       
       const filteredMessages = getFilteredMessages();
       
       if (!filteredMessages || filteredMessages.length === 0) {
-        container.innerHTML = '<div class="empty-state">No messages</div>';
+        if (!append) {
+          container.innerHTML = '<div class="empty-state">No messages</div>';
+        }
         return;
       }
 
-      // Render all messages at once
+      // Get messages to display (from the end, showing most recent)
+      const totalMessages = filteredMessages.length;
+      const startIndex = Math.max(0, totalMessages - displayedCount);
+      const messagesToShow = filteredMessages.slice(startIndex);
+
+      // If appending (loading older messages), prepend them
+      if (append) {
+        const previousStartIndex = Math.max(0, totalMessages - (displayedCount - MESSAGES_PER_LOAD));
+        const newMessages = filteredMessages.slice(previousStartIndex, startIndex);
+        
+        const fragment = document.createDocumentFragment();
+        newMessages.forEach((message) => {
+          const messageDiv = createMessageElement(message);
+          fragment.appendChild(messageDiv);
+        });
+        
+        // Remove load more button if it exists
+        const loadMoreBtn = container.querySelector('.load-more-button');
+        if (loadMoreBtn) {
+          loadMoreBtn.remove();
+        }
+        
+        const firstChild = container.firstChild;
+        if (firstChild) {
+          container.insertBefore(fragment, firstChild);
+        } else {
+          container.appendChild(fragment);
+        }
+        
+        // Add load more button at the top if there are more messages
+        addLoadMoreButton();
+        
+        // Re-apply search highlights if active
+        if (searchQuery && searchQuery.trim()) {
+          setTimeout(() => {
+            performSearch();
+          }, 0);
+        }
+        
+        // Check scroll position for load more button
+        setTimeout(() => {
+          checkScrollPosition();
+        }, 0);
+        return;
+      }
+
+      // Otherwise, render messages from scratch
       container.innerHTML = '';
       
-      // Use document fragment for better performance when rendering many messages
+      // Use document fragment for better performance
       const fragment = document.createDocumentFragment();
-      filteredMessages.forEach((message) => {
+      messagesToShow.forEach((message) => {
         const messageDiv = createMessageElement(message);
         fragment.appendChild(messageDiv);
       });
       container.appendChild(fragment);
+
+      // Add load more button at the top if there are more messages
+      addLoadMoreButton();
 
       // Scroll to bottom and re-perform search if active
       setTimeout(() => {
@@ -1324,7 +1407,81 @@
         if (searchQuery && searchQuery.trim()) {
           performSearch();
         }
+        // Check scroll position for load more button
+        checkScrollPosition();
       }, 0);
+    }
+
+    function addLoadMoreButton() {
+      const container = document.getElementById('messagesContainer');
+      const filteredMessages = getFilteredMessages();
+      const totalMessages = filteredMessages.length;
+      
+      // Remove existing button
+      const existingBtn = container.querySelector('.load-more-button');
+      if (existingBtn) {
+        existingBtn.remove();
+      }
+      
+      // Add button if there are more messages to load
+      // Button will only be visible when scrolled to top (handled by checkScrollPosition)
+      if (displayedCount < totalMessages) {
+        const loadMoreBtn = document.createElement('button');
+        loadMoreBtn.className = 'load-more-button';
+        loadMoreBtn.textContent = 'Load older messages';
+        loadMoreBtn.onclick = loadOlderMessages;
+        loadMoreBtn.style.display = 'none'; // Hidden by default, shown when scrolled to top
+        
+        // Insert at the top
+        const firstChild = container.firstChild;
+        if (firstChild) {
+          container.insertBefore(loadMoreBtn, firstChild);
+        } else {
+          container.appendChild(loadMoreBtn);
+        }
+      }
+    }
+
+    function checkScrollPosition() {
+      const container = document.getElementById('messagesContainer');
+      if (!container) return;
+      
+      const loadMoreBtn = container.querySelector('.load-more-button');
+      if (!loadMoreBtn) return;
+      
+      const filteredMessages = getFilteredMessages();
+      const totalMessages = filteredMessages.length;
+      
+      // Show button only if there are more messages AND user is scrolled to top
+      if (displayedCount < totalMessages) {
+        const scrollTop = container.scrollTop;
+        const threshold = 50; // Show button when within 50px of top
+        loadMoreBtn.style.display = scrollTop <= threshold ? 'block' : 'none';
+      } else {
+        loadMoreBtn.style.display = 'none';
+      }
+    }
+
+    function loadOlderMessages() {
+      const filteredMessages = getFilteredMessages();
+      const totalMessages = filteredMessages.length;
+      
+      if (displayedCount >= totalMessages) {
+        return; // All messages already loaded
+      }
+
+      const previousScrollHeight = document.getElementById('messagesContainer').scrollHeight;
+      displayedCount = Math.min(displayedCount + MESSAGES_PER_LOAD, totalMessages);
+      renderMessages(true); // Append mode
+      
+      // Maintain scroll position after loading older messages
+      requestAnimationFrame(() => {
+        const container = document.getElementById('messagesContainer');
+        const newScrollHeight = container.scrollHeight;
+        container.scrollTop = newScrollHeight - previousScrollHeight;
+        // Check scroll position for load more button
+        checkScrollPosition();
+      });
     }
 
     function createMessageElement(message) {
@@ -1567,7 +1724,7 @@
       `;
       defaultItem.onclick = () => {
         currentViewUser = null;
-        displayedCount = 500;
+        displayedCount = 1000;
         updateUserViewMenu();
         renderMessages();
         // Close menu on mobile after selection
@@ -1591,7 +1748,7 @@
         `;
         item.onclick = () => {
           currentViewUser = user;
-          displayedCount = 500;
+          displayedCount = 1000;
           updateUserViewMenu();
           renderMessages();
           // Close menu on mobile after selection
@@ -1629,27 +1786,41 @@
       }
 
       const query = searchQuery.toLowerCase().trim();
-      const container = document.getElementById('messagesContainer');
-      const messages = container.querySelectorAll('.message');
+      const filteredMessages = getFilteredMessages();
       
+      // Search through ALL messages in memory, not just rendered ones
       searchResults = [];
       currentSearchIndex = -1;
 
-      messages.forEach((messageEl, index) => {
-        const messageContent = messageEl.querySelector('.message-content');
-        if (!messageContent) return;
-
-        const messageText = messageContent.textContent || '';
-        const hasMatch = messageText.toLowerCase().includes(query);
+      filteredMessages.forEach((message, index) => {
+        let hasMatch = false;
+        
+        // Check message text
+        if (message.message && message.message.toLowerCase().includes(query)) {
+          hasMatch = true;
+        }
+        
+        // Check sender name
+        if (message.sender && message.sender.toLowerCase().includes(query)) {
+          hasMatch = true;
+        }
+        
+        // Check attachments
+        if (message.attachments && message.attachments.some(att => 
+          (att.text && att.text.toLowerCase().includes(query)) ||
+          (att.url && att.url.toLowerCase().includes(query))
+        )) {
+          hasMatch = true;
+        }
         
         if (hasMatch) {
-          searchResults.push(messageEl);
-          messageEl.classList.add('search-match-message');
-        } else {
-          messageEl.classList.remove('search-match-message', 'highlighted');
+          searchResults.push(index); // Store message index, not DOM element
         }
       });
 
+      // Now highlight and render messages that match
+      highlightSearchResults();
+      
       // Update navigation UI
       updateSearchNavigation();
       
@@ -1658,6 +1829,47 @@
         currentSearchIndex = 0;
         jumpToSearchResult(0);
       }
+    }
+
+    function highlightSearchResults() {
+      const container = document.getElementById('messagesContainer');
+      const filteredMessages = getFilteredMessages();
+      const totalMessages = filteredMessages.length;
+      const startIndex = Math.max(0, totalMessages - displayedCount);
+      
+      // Clear all highlights first
+      const allMessages = container.querySelectorAll('.message');
+      allMessages.forEach(msg => {
+        msg.classList.remove('search-match-message', 'highlighted');
+      });
+      
+      // Highlight messages that are currently rendered and match search
+      searchResults.forEach(messageIndex => {
+        // Check if this message is currently rendered
+        if (messageIndex >= startIndex && messageIndex < totalMessages) {
+          const renderedIndex = messageIndex - startIndex;
+          const messageEl = allMessages[renderedIndex];
+          if (messageEl) {
+            messageEl.classList.add('search-match-message');
+          }
+        }
+      });
+    }
+
+    function ensureMessageLoaded(messageIndex) {
+      const filteredMessages = getFilteredMessages();
+      const totalMessages = filteredMessages.length;
+      const startIndex = Math.max(0, totalMessages - displayedCount);
+      
+      // If message is not loaded, load messages up to that point
+      if (messageIndex < startIndex) {
+        // Calculate how many messages we need to load
+        const messagesToLoad = startIndex - messageIndex + MESSAGES_PER_LOAD;
+        displayedCount = Math.min(displayedCount + messagesToLoad, totalMessages);
+        renderMessages(false); // Re-render all
+        return true; // Indicates we reloaded
+      }
+      return false; // Message already loaded
     }
 
     function clearSearch() {
@@ -1680,25 +1892,52 @@
       });
 
       updateSearchNavigation();
+      
+      // Re-render to remove search highlights from text
+      if (currentMessages && currentMessages.length > 0) {
+        renderMessages();
+      }
     }
 
     function jumpToSearchResult(index) {
       if (index < 0 || index >= searchResults.length) return;
 
+      const filteredMessages = getFilteredMessages();
+      const messageIndex = searchResults[index];
+      
+      // Ensure the message is loaded
+      const wasReloaded = ensureMessageLoaded(messageIndex);
+      
+      if (wasReloaded) {
+        // Wait for render to complete, then jump
+        setTimeout(() => {
+          jumpToSearchResult(index);
+        }, 100);
+        return;
+      }
+
+      // Find the message element in the DOM
+      const container = document.getElementById('messagesContainer');
+      const totalMessages = filteredMessages.length;
+      const startIndex = Math.max(0, totalMessages - displayedCount);
+      const renderedIndex = messageIndex - startIndex;
+      
+      const allMessages = container.querySelectorAll('.message');
+      const targetMessage = allMessages[renderedIndex];
+      
+      if (!targetMessage) return;
+
       // Remove previous highlight
-      searchResults.forEach(msg => msg.classList.remove('highlighted'));
+      allMessages.forEach(msg => msg.classList.remove('highlighted'));
 
       // Highlight current result
-      const targetMessage = searchResults[index];
-      targetMessage.classList.add('highlighted');
+      targetMessage.classList.add('highlighted', 'search-match-message');
       currentSearchIndex = index;
 
       // Scroll to message
-      const container = document.getElementById('messagesContainer');
       const messageTop = targetMessage.offsetTop;
       const messageHeight = targetMessage.offsetHeight;
       const containerHeight = container.clientHeight;
-      const scrollTop = container.scrollTop;
 
       // Center the message in view
       const targetScroll = messageTop - (containerHeight / 2) + (messageHeight / 2);
@@ -1725,7 +1964,15 @@
       
       const current = currentSearchIndex + 1;
       const total = searchResults.length;
-      info.textContent = `${current} of ${total}`;
+      const filteredMessages = getFilteredMessages();
+      const totalMessages = filteredMessages.length;
+      const startIndex = Math.max(0, totalMessages - displayedCount);
+      
+      // Check if current result is loaded
+      const currentMessageIndex = searchResults[currentSearchIndex];
+      const isLoaded = currentMessageIndex >= startIndex && currentMessageIndex < totalMessages;
+      
+      info.textContent = `${current} of ${total}${!isLoaded ? ' (loading...)' : ''}`;
 
       prevButton.disabled = currentSearchIndex <= 0;
       nextButton.disabled = currentSearchIndex >= searchResults.length - 1;
@@ -1850,6 +2097,20 @@
           if (currentMessages && currentMessages.length > 0) {
             renderMessages();
           }
+        });
+      }
+
+      // Set up scroll listener for load more button
+      const messagesContainer = document.getElementById('messagesContainer');
+      if (messagesContainer) {
+        messagesContainer.addEventListener('scroll', checkScrollPosition);
+        // Also check on scroll end for better UX
+        let scrollTimeout;
+        messagesContainer.addEventListener('scroll', () => {
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => {
+            checkScrollPosition();
+          }, 100);
         });
       }
 
