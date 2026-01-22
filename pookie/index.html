@@ -1395,18 +1395,27 @@
         const previousStartIndex = Math.max(0, totalMessages - (displayedCount - MESSAGES_PER_LOAD));
         const newMessages = filteredMessages.slice(previousStartIndex, startIndex);
         
+        console.log(`Rendering ${newMessages.length} older messages (${previousStartIndex} to ${startIndex})`);
+        
+        if (newMessages.length === 0) {
+          console.warn('No new messages to render in append mode');
+          return;
+        }
+        
         const fragment = document.createDocumentFragment();
         newMessages.forEach((message) => {
           const messageDiv = createMessageElement(message);
           fragment.appendChild(messageDiv);
         });
         
-        const firstChild = container.firstChild;
-        if (firstChild) {
-          container.insertBefore(fragment, firstChild);
+        // Insert at the beginning
+        if (container.firstChild) {
+          container.insertBefore(fragment, container.firstChild);
         } else {
           container.appendChild(fragment);
         }
+        
+        console.log(`Added ${newMessages.length} messages. Container now has ${container.children.length} children`);
         
         // Re-apply search highlights if active
         if (searchQuery && searchQuery.trim()) {
@@ -1458,20 +1467,38 @@
       const container = document.getElementById('messagesContainer');
       const previousScrollHeight = container.scrollHeight;
       const previousScrollTop = container.scrollTop;
+      const containerHeight = container.clientHeight;
+      
+      // Check if user is near the bottom (within 100px)
+      const isNearBottom = (previousScrollHeight - previousScrollTop - containerHeight) < 100;
       
       displayedCount = Math.min(displayedCount + MESSAGES_PER_LOAD, totalMessages);
       renderMessages(true); // Append mode
       
-      // Maintain scroll position after loading older messages for seamless scrolling
+      // Maintain scroll position after DOM updates
+      // Use double requestAnimationFrame to ensure DOM is fully updated
       requestAnimationFrame(() => {
-        const newScrollHeight = container.scrollHeight;
-        const scrollDifference = newScrollHeight - previousScrollHeight;
-        container.scrollTop = previousScrollTop + scrollDifference;
-        
-        // Reset loading flag after a short delay to ensure render is complete
-        setTimeout(() => {
-          isLoadingOlder = false;
-        }, 100);
+        requestAnimationFrame(() => {
+          const newScrollHeight = container.scrollHeight;
+          const scrollDifference = newScrollHeight - previousScrollHeight;
+          
+          console.log(`Scroll: prev=${previousScrollTop}, diff=${scrollDifference}, newHeight=${newScrollHeight}, prevHeight=${previousScrollHeight}`);
+          
+          if (isNearBottom) {
+            // User was at bottom, maintain position (stay at bottom)
+            container.scrollTop = previousScrollTop + scrollDifference;
+          } else {
+            // User scrolled up, maintain their scroll position relative to content
+            container.scrollTop = previousScrollTop + scrollDifference;
+          }
+          
+          console.log(`New scrollTop: ${container.scrollTop}, container height: ${container.clientHeight}, scrollHeight: ${container.scrollHeight}`);
+          
+          // Reset loading flag after a short delay to ensure render is complete
+          setTimeout(() => {
+            isLoadingOlder = false;
+          }, 100);
+        });
       });
     }
 
