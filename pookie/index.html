@@ -1103,8 +1103,9 @@
     let chatsData = null;
     let currentChat = null;
     let currentMessages = []; // All messages in memory
-    let displayedCount = 1000; // Start with last 1000 messages
-    const MESSAGES_PER_LOAD = 1000; // Load 1000 more at a time
+    let displayedCount = 500; // Start with last 500 messages
+    const MESSAGES_PER_LOAD = 500; // Load 500 more at a time
+    let isLoadingOlder = false; // Prevent multiple simultaneous loads
     let currentViewUser = null; // Current user perspective (null = default view)
     let searchQuery = '';
     let searchResults = []; // Array of message indices that match search (from all messages)
@@ -1265,7 +1266,8 @@
 
     function openChat(chatKey, chat, element) {
       currentChat = chatKey;
-      displayedCount = 1000; // Reset to last 1000 messages
+      displayedCount = 500; // Reset to last 500 messages
+      isLoadingOlder = false;
       currentViewUser = null; // Reset view user
       searchQuery = ''; // Reset search
       document.getElementById('searchInput').value = '';
@@ -1356,12 +1358,6 @@
           fragment.appendChild(messageDiv);
         });
         
-        // Remove load more button if it exists
-        const loadMoreBtn = container.querySelector('.load-more-button');
-        if (loadMoreBtn) {
-          loadMoreBtn.remove();
-        }
-        
         const firstChild = container.firstChild;
         if (firstChild) {
           container.insertBefore(fragment, firstChild);
@@ -1369,20 +1365,12 @@
           container.appendChild(fragment);
         }
         
-        // Add load more button at the top if there are more messages
-        addLoadMoreButton();
-        
         // Re-apply search highlights if active
         if (searchQuery && searchQuery.trim()) {
           setTimeout(() => {
             performSearch();
           }, 0);
         }
-        
-        // Check scroll position for load more button
-        setTimeout(() => {
-          checkScrollPosition();
-        }, 0);
         return;
       }
 
@@ -1397,9 +1385,6 @@
       });
       container.appendChild(fragment);
 
-      // Add load more button at the top if there are more messages
-      addLoadMoreButton();
-
       // Scroll to bottom and re-perform search if active
       setTimeout(() => {
         container.scrollTop = container.scrollHeight;
@@ -1407,58 +1392,25 @@
         if (searchQuery && searchQuery.trim()) {
           performSearch();
         }
-        // Check scroll position for load more button
-        checkScrollPosition();
       }, 0);
     }
 
-    function addLoadMoreButton() {
+    function checkScrollAndAutoLoad() {
       const container = document.getElementById('messagesContainer');
-      const filteredMessages = getFilteredMessages();
-      const totalMessages = filteredMessages.length;
-      
-      // Remove existing button
-      const existingBtn = container.querySelector('.load-more-button');
-      if (existingBtn) {
-        existingBtn.remove();
-      }
-      
-      // Add button if there are more messages to load
-      // Button will only be visible when scrolled to top (handled by checkScrollPosition)
-      if (displayedCount < totalMessages) {
-        const loadMoreBtn = document.createElement('button');
-        loadMoreBtn.className = 'load-more-button';
-        loadMoreBtn.textContent = 'Load older messages';
-        loadMoreBtn.onclick = loadOlderMessages;
-        loadMoreBtn.style.display = 'none'; // Hidden by default, shown when scrolled to top
-        
-        // Insert at the top
-        const firstChild = container.firstChild;
-        if (firstChild) {
-          container.insertBefore(loadMoreBtn, firstChild);
-        } else {
-          container.appendChild(loadMoreBtn);
-        }
-      }
-    }
-
-    function checkScrollPosition() {
-      const container = document.getElementById('messagesContainer');
-      if (!container) return;
-      
-      const loadMoreBtn = container.querySelector('.load-more-button');
-      if (!loadMoreBtn) return;
+      if (!container || isLoadingOlder) return;
       
       const filteredMessages = getFilteredMessages();
       const totalMessages = filteredMessages.length;
       
-      // Show button only if there are more messages AND user is scrolled to top
+      // Auto-load when user scrolls near the top and there are more messages
       if (displayedCount < totalMessages) {
         const scrollTop = container.scrollTop;
-        const threshold = 50; // Show button when within 50px of top
-        loadMoreBtn.style.display = scrollTop <= threshold ? 'block' : 'none';
-      } else {
-        loadMoreBtn.style.display = 'none';
+        const threshold = 300; // Load when within 300px of top
+        
+        if (scrollTop <= threshold) {
+          isLoadingOlder = true;
+          loadOlderMessages();
+        }
       }
     }
 
@@ -1467,20 +1419,29 @@
       const totalMessages = filteredMessages.length;
       
       if (displayedCount >= totalMessages) {
+        isLoadingOlder = false;
         return; // All messages already loaded
       }
 
-      const previousScrollHeight = document.getElementById('messagesContainer').scrollHeight;
+      const container = document.getElementById('messagesContainer');
+      const previousScrollHeight = container.scrollHeight;
+      const previousScrollTop = container.scrollTop;
+      
       displayedCount = Math.min(displayedCount + MESSAGES_PER_LOAD, totalMessages);
       renderMessages(true); // Append mode
       
-      // Maintain scroll position after loading older messages
+      // Maintain scroll position after loading older messages for seamless scrolling
       requestAnimationFrame(() => {
-        const container = document.getElementById('messagesContainer');
         const newScrollHeight = container.scrollHeight;
-        container.scrollTop = newScrollHeight - previousScrollHeight;
-        // Check scroll position for load more button
-        checkScrollPosition();
+        const scrollDifference = newScrollHeight - previousScrollHeight;
+        container.scrollTop = previousScrollTop + scrollDifference;
+        
+        isLoadingOlder = false;
+        
+        // Check if we need to load more (user might still be near top)
+        setTimeout(() => {
+          checkScrollAndAutoLoad();
+        }, 100);
       });
     }
 
@@ -1724,7 +1685,7 @@
       `;
       defaultItem.onclick = () => {
         currentViewUser = null;
-        displayedCount = 1000;
+        displayedCount = 500;
         updateUserViewMenu();
         renderMessages();
         // Close menu on mobile after selection
@@ -1748,7 +1709,7 @@
         `;
         item.onclick = () => {
           currentViewUser = user;
-          displayedCount = 1000;
+          displayedCount = 500;
           updateUserViewMenu();
           renderMessages();
           // Close menu on mobile after selection
@@ -2100,17 +2061,15 @@
         });
       }
 
-      // Set up scroll listener for load more button
+      // Set up scroll listener for auto-loading messages
       const messagesContainer = document.getElementById('messagesContainer');
       if (messagesContainer) {
-        messagesContainer.addEventListener('scroll', checkScrollPosition);
-        // Also check on scroll end for better UX
         let scrollTimeout;
         messagesContainer.addEventListener('scroll', () => {
           clearTimeout(scrollTimeout);
           scrollTimeout = setTimeout(() => {
-            checkScrollPosition();
-          }, 100);
+            checkScrollAndAutoLoad();
+          }, 150); // Debounce to avoid too many checks
         });
       }
 
