@@ -1340,7 +1340,6 @@
 
     function openChat(chatKey, chat, element) {
       currentChat = chatKey;
-      displayedCount = 500; // Reset to last 500 messages
       stopAutoLoading(); // Stop any existing auto-loading
       currentViewUser = null; // Reset view user
       searchQuery = ''; // Reset search
@@ -1365,7 +1364,10 @@
         .filter(msg => !isSystemMessage(msg))
         .reverse(); // Reverse so newest is at end
 
-        const totalMessageCount = currentMessages.length;
+      const totalMessageCount = currentMessages.length;
+      
+      // Set displayedCount to show last 500 messages, but not more than total
+      displayedCount = Math.min(500, totalMessageCount);
 
       // Update header
       document.getElementById('chatHeader').style.display = 'flex';
@@ -1489,6 +1491,10 @@
 
       // Get messages to display (from the end, showing most recent)
       const totalMessages = filteredMessages.length;
+      
+      // Ensure displayedCount doesn't exceed total messages
+      displayedCount = Math.min(displayedCount, totalMessages);
+      
       const startIndex = Math.max(0, totalMessages - displayedCount);
       const messagesToShow = filteredMessages.slice(startIndex);
 
@@ -1501,6 +1507,11 @@
 
       // Otherwise, render messages from scratch
       container.innerHTML = '';
+      
+      if (messagesToShow.length === 0) {
+        container.innerHTML = '<div class="empty-state">No messages</div>';
+        return;
+      }
       
       // Use document fragment for better performance
       const fragment = document.createDocumentFragment();
@@ -2024,9 +2035,13 @@
       const startIndex = Math.max(0, totalMessages - displayedCount);
       
       if (messageIndex < startIndex) {
-        // Load messages up to this point
-        const messagesToLoad = startIndex - messageIndex + MESSAGES_PER_LOAD;
-        displayedCount = Math.min(displayedCount + messagesToLoad, totalMessages);
+        // Need to load older messages - calculate how many to show
+        // Show messages from messageIndex to the end (with some buffer)
+        // Ensure we show at least MESSAGES_PER_LOAD messages, or from messageIndex to end
+        const messagesFromIndex = totalMessages - messageIndex;
+        displayedCount = Math.max(messagesFromIndex, MESSAGES_PER_LOAD);
+        displayedCount = Math.min(displayedCount, totalMessages); // Don't exceed total
+        
         renderMessages(false);
         
         // Wait for render, then jump
@@ -2036,11 +2051,16 @@
 
       // Find and scroll to message
       const container = document.getElementById('messagesContainer');
-      const renderedIndex = messageIndex - startIndex;
+      const currentStartIndex = Math.max(0, totalMessages - displayedCount);
+      const renderedIndex = messageIndex - currentStartIndex;
       const allMessages = container.querySelectorAll('.message');
       const targetMessage = allMessages[renderedIndex];
 
-      if (!targetMessage) return;
+      if (!targetMessage) {
+        // Message not found, try again after a short delay
+        setTimeout(() => jumpToMessage(messageIndex), 100);
+        return;
+      }
 
       // Remove previous highlights
       allMessages.forEach(msg => msg.classList.remove('highlighted'));
@@ -2062,7 +2082,7 @@
       // Hide search panel after a moment
       setTimeout(() => {
         const panel = document.getElementById('searchResultsPanel');
-        panel.classList.remove('show');
+        if (panel) panel.classList.remove('show');
       }, 300);
     }
 
