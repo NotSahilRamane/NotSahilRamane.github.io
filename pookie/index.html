@@ -257,11 +257,143 @@
       object-fit: cover;
     }
 
-    /* Search highlight and navigation */
-    .message.search-match-message {
-      opacity: 1;
+    /* Instagram-style search results panel */
+    .search-results-panel {
+      display: none;
+      position: fixed;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 600px;
+      max-height: 70vh;
+      background: #1a1a1a;
+      border: 1px solid #262626;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      overflow: hidden;
+      flex-direction: column;
     }
 
+    .search-results-panel.show {
+      display: flex;
+    }
+
+    .search-results-header {
+      padding: 16px;
+      border-bottom: 1px solid #262626;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-results-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .search-results-count {
+      font-size: 14px;
+      color: #a8a8a8;
+    }
+
+    .search-results-list {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+    }
+
+    .search-result-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid #262626;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .search-result-item:hover {
+      background: #262626;
+    }
+
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-result-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .search-result-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .search-result-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-result-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .search-result-sender {
+      font-weight: 600;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .search-result-time {
+      font-size: 12px;
+      color: #a8a8a8;
+    }
+
+    .search-result-text {
+      font-size: 14px;
+      color: #e0e0e0;
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .search-result-text .search-highlight {
+      background: rgba(0, 149, 246, 0.3);
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-weight: 600;
+      color: #0095f6;
+    }
+
+    .search-results-empty {
+      padding: 40px 20px;
+      text-align: center;
+      color: #a8a8a8;
+      font-size: 14px;
+    }
+
+    /* Message highlight when jumped to from search */
     .message.highlighted {
       background: rgba(0, 149, 246, 0.15);
       border-radius: 8px;
@@ -273,64 +405,7 @@
 
     @keyframes highlightPulse {
       0% { background: rgba(0, 149, 246, 0.3); }
-      100% { background: rgba(0, 149, 246, 0.1); }
-    }
-
-    .message-content .search-match {
-      background: rgba(0, 149, 246, 0.3);
-      padding: 2px 4px;
-      border-radius: 4px;
-      font-weight: 600;
-    }
-
-    .search-navigation {
-      display: none;
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1a1a1a;
-      border: 1px solid #262626;
-      border-radius: 24px;
-      padding: 8px 16px;
-      align-items: center;
-      gap: 12px;
-      z-index: 200;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    }
-
-    .search-navigation.show {
-      display: flex;
-    }
-
-    .search-nav-button {
-      background: transparent;
-      border: none;
-      color: #fff;
-      cursor: pointer;
-      padding: 6px 12px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
-      font-size: 14px;
-    }
-
-    .search-nav-button:hover:not(:disabled) {
-      background: #262626;
-    }
-
-    .search-nav-button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .search-nav-info {
-      font-size: 14px;
-      color: #a8a8a8;
-      padding: 0 8px;
-      white-space: nowrap;
+      100% { background: rgba(0, 149, 246, 0.15); }
     }
 
     .chat-header-avatar {
@@ -1078,23 +1153,21 @@
       <div class="messages-container" id="messagesContainer">
         <div class="empty-state">Select a chat to view messages</div>
       </div>
-      <div class="search-navigation" id="searchNavigation">
-        <button class="search-nav-button" id="searchPrevButton" title="Previous match">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-            <path d="M15 18l-6-6 6-6"/>
-          </svg>
-        </button>
-        <div class="search-nav-info" id="searchNavInfo"></div>
-        <button class="search-nav-button" id="searchNextButton" title="Next match">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-            <path d="M9 18l6-6-6-6"/>
-          </svg>
-        </button>
-        <button class="search-nav-button" id="searchCloseButton" title="Close search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-            <path d="M18 6L6 18M6 6l12 12"/>
-          </svg>
-        </button>
+      <div class="search-results-panel" id="searchResultsPanel">
+        <div class="search-results-header">
+          <div>
+            <div class="search-results-title">Search Results</div>
+            <div class="search-results-count" id="searchResultsCount">0 results</div>
+          </div>
+          <button class="header-button" id="searchCloseButton" title="Close search" style="background: transparent; border: none; padding: 4px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <div class="search-results-list" id="searchResultsList">
+          <div class="search-results-empty">Type to search messages...</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1111,8 +1184,7 @@
     let scrollTimeout = null; // Timeout to detect when scrolling stops
     let currentViewUser = null; // Current user perspective (null = default view)
     let searchQuery = '';
-    let searchResults = []; // Array of message indices that match search (from all messages)
-    let currentSearchIndex = -1; // Current highlighted search result
+    let searchResults = []; // Array of {index, message, snippet} objects for search results
 
     // Profile picture mapping for chats
     const chatProfilePictures = {
@@ -1709,14 +1781,10 @@
         reactionsHtml = `<div class="message-reactions">${message.reactions.join(', ')}</div>`;
       }
 
-      // Highlight search matches in message text
+      // Message text (no search highlighting in messages - only in results panel)
       let messageTextHtml = '';
-      if (message.message) {
-        if (searchQuery && searchQuery.trim()) {
-          messageTextHtml = highlightSearchMatches(message.message, searchQuery);
-        } else {
-          messageTextHtml = `<div class="message-text">${escapeHtml(message.message)}</div>`;
-        }
+      if (message.message && !hasInstagramAttachment) {
+        messageTextHtml = `<div class="message-text">${escapeHtml(message.message)}</div>`;
       }
 
       messageDiv.innerHTML = `
@@ -1805,333 +1873,214 @@
       return div.innerHTML;
     }
 
-    function highlightSearchMatches(text, query) {
-      if (!query || !query.trim()) {
-        return `<div class="message-text">${escapeHtml(text)}</div>`;
-      }
+    function formatTimestamp(timestampMs) {
+      if (!timestampMs) return '';
       
-      const escapedText = escapeHtml(text);
-      const escapedQuery = escapeHtml(query);
-      const regex = new RegExp(`(${escapedQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-      const highlighted = escapedText.replace(regex, '<span class="search-match">$1</span>');
+      const date = new Date(timestampMs);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
       
-      return `<div class="message-text">${highlighted}</div>`;
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffDays < 7) return `${diffDays}d ago`;
+      
+      // Format as date
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined });
     }
 
-    function updateSearchHighlights() {
-      if (!searchQuery || !searchQuery.trim()) {
-        return;
-      }
-      
-      const container = document.getElementById('messagesContainer');
-      const messages = container.querySelectorAll('.message .message-text');
-      const query = searchQuery.toLowerCase().trim();
-      
-      // Process in chunks to prevent blocking
-      const processChunk = (startIndex) => {
-        const chunkSize = 100;
-        const endIndex = Math.min(startIndex + chunkSize, messages.length);
-        
-        for (let i = startIndex; i < endIndex; i++) {
-          const textEl = messages[i];
-          const originalText = textEl.textContent;
-          if (originalText.toLowerCase().includes(query)) {
-            const escapedText = escapeHtml(originalText);
-            const escapedQuery = escapeHtml(query);
-            const regex = new RegExp(`(${escapedQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            const highlighted = escapedText.replace(regex, '<span class="search-match">$1</span>');
-            textEl.innerHTML = highlighted;
-          } else {
-            // Remove highlights if no match
-            textEl.innerHTML = escapeHtml(originalText);
-          }
-        }
-        
-        if (endIndex < messages.length) {
-          // Continue processing in next chunk
-          if (window.requestIdleCallback) {
-            requestIdleCallback(() => processChunk(endIndex), { timeout: 50 });
-          } else {
-            setTimeout(() => processChunk(endIndex), 10);
-          }
-        }
-      };
-      
-      if (messages.length > 0) {
-        processChunk(0);
-      }
-    }
 
-    function updateSearchHighlights() {
-      if (!searchQuery || !searchQuery.trim()) {
-        return;
-      }
-      
-      const container = document.getElementById('messagesContainer');
-      const messages = container.querySelectorAll('.message .message-text');
-      const query = searchQuery.toLowerCase().trim();
-      
-      // Process in chunks to prevent blocking
-      const processChunk = (startIndex) => {
-        const chunkSize = 100;
-        const endIndex = Math.min(startIndex + chunkSize, messages.length);
-        
-        for (let i = startIndex; i < endIndex; i++) {
-          const textEl = messages[i];
-          const originalText = textEl.textContent;
-          if (originalText.toLowerCase().includes(query)) {
-            const escapedText = escapeHtml(originalText);
-            const escapedQuery = escapeHtml(query);
-            const regex = new RegExp(`(${escapedQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            const highlighted = escapedText.replace(regex, '<span class="search-match">$1</span>');
-            textEl.innerHTML = highlighted;
-          } else {
-            // Remove highlights if no match
-            textEl.innerHTML = escapeHtml(originalText);
-          }
-        }
-        
-        if (endIndex < messages.length) {
-          // Continue processing in next chunk
-          if (window.requestIdleCallback) {
-            requestIdleCallback(() => processChunk(endIndex), { timeout: 50 });
-          } else {
-            setTimeout(() => processChunk(endIndex), 10);
-          }
-        }
-      };
-      
-      if (messages.length > 0) {
-        processChunk(0);
-      }
-    }
-
+    // Lightweight Instagram-style search - builds results list without heavy processing
     function performSearch() {
       if (!searchQuery || !searchQuery.trim()) {
-        clearSearch();
+        renderSearchResults();
         return;
       }
 
       const query = searchQuery.toLowerCase().trim();
       const filteredMessages = getFilteredMessages();
-      
-      // Search through ALL messages in memory, not just rendered ones
       searchResults = [];
-      currentSearchIndex = -1;
 
-      // Use chunked search to prevent blocking UI
-      const searchChunk = (startIndex) => {
-        const chunkSize = 2000; // Process 2000 messages at a time
-        const endIndex = Math.min(startIndex + chunkSize, filteredMessages.length);
+      // Simple, fast search - no chunking needed for building results list
+      for (let i = 0; i < filteredMessages.length; i++) {
+        const message = filteredMessages[i];
+        let matchText = '';
+        let hasMatch = false;
         
-        for (let i = startIndex; i < endIndex; i++) {
-          const message = filteredMessages[i];
-          let hasMatch = false;
-          
-          // Check message text
-          if (message.message && message.message.toLowerCase().includes(query)) {
-            hasMatch = true;
-          }
-          
-          // Check sender name
-          if (message.sender && message.sender.toLowerCase().includes(query)) {
-            hasMatch = true;
-          }
-          
-          // Check attachments
-          if (message.attachments && message.attachments.some(att => 
-            (att.text && att.text.toLowerCase().includes(query)) ||
-            (att.url && att.url.toLowerCase().includes(query))
-          )) {
-            hasMatch = true;
-          }
-          
-          if (hasMatch) {
-            searchResults.push(i);
+        // Check message text
+        if (message.message && message.message.toLowerCase().includes(query)) {
+          hasMatch = true;
+          matchText = message.message;
+        }
+        
+        // Check sender name
+        if (!hasMatch && message.sender && message.sender.toLowerCase().includes(query)) {
+          hasMatch = true;
+          matchText = message.sender;
+        }
+        
+        // Check attachments
+        if (!hasMatch && message.attachments) {
+          for (const att of message.attachments) {
+            if ((att.text && att.text.toLowerCase().includes(query)) ||
+                (att.url && att.url.toLowerCase().includes(query))) {
+              hasMatch = true;
+              matchText = att.text || att.url || '';
+              break;
+            }
           }
         }
         
-        if (endIndex < filteredMessages.length) {
-          // Continue searching in next chunk (non-blocking)
-          if (window.requestIdleCallback) {
-            requestIdleCallback(() => searchChunk(endIndex), { timeout: 100 });
-          } else {
-            setTimeout(() => searchChunk(endIndex), 50);
+        if (hasMatch) {
+          // Create snippet with highlighted query
+          let snippet = matchText;
+          if (snippet.length > 100) {
+            const index = snippet.toLowerCase().indexOf(query);
+            const start = Math.max(0, index - 30);
+            const end = Math.min(snippet.length, index + query.length + 30);
+            snippet = (start > 0 ? '...' : '') + snippet.substring(start, end) + (end < snippet.length ? '...' : '');
           }
-        } else {
-          // Search complete - update UI
-          highlightSearchResults();
-          updateSearchNavigation();
           
-          // Jump to first result if any found
-          if (searchResults.length > 0) {
-            currentSearchIndex = 0;
-            jumpToSearchResult(0);
-          }
+          searchResults.push({
+            index: i,
+            message: message,
+            snippet: snippet
+          });
         }
-      };
-      
-      // Start chunked search
-      searchChunk(0);
-    }
-
-    function highlightSearchResults() {
-      const container = document.getElementById('messagesContainer');
-      const filteredMessages = getFilteredMessages();
-      const totalMessages = filteredMessages.length;
-      const startIndex = Math.max(0, totalMessages - displayedCount);
-      
-      // Clear all highlights first
-      const allMessages = container.querySelectorAll('.message');
-      allMessages.forEach(msg => {
-        msg.classList.remove('search-match-message', 'highlighted');
-      });
-      
-      // Highlight messages that are currently rendered and match search
-      searchResults.forEach(messageIndex => {
-        // Check if this message is currently rendered
-        if (messageIndex >= startIndex && messageIndex < totalMessages) {
-          const renderedIndex = messageIndex - startIndex;
-          const messageEl = allMessages[renderedIndex];
-          if (messageEl) {
-            messageEl.classList.add('search-match-message');
-          }
-        }
-      });
-    }
-
-    function ensureMessageLoaded(messageIndex) {
-      const filteredMessages = getFilteredMessages();
-      const totalMessages = filteredMessages.length;
-      const startIndex = Math.max(0, totalMessages - displayedCount);
-      
-      // If message is not loaded, load messages up to that point
-      if (messageIndex < startIndex) {
-        // Calculate how many messages we need to load
-        const messagesToLoad = startIndex - messageIndex + MESSAGES_PER_LOAD;
-        displayedCount = Math.min(displayedCount + messagesToLoad, totalMessages);
-        renderMessages(false); // Re-render all
-        return true; // Indicates we reloaded
       }
-      return false; // Message already loaded
+
+      renderSearchResults();
     }
 
-    function clearSearch() {
-      searchResults = [];
-      currentSearchIndex = -1;
-      
-      const container = document.getElementById('messagesContainer');
-      const messages = container.querySelectorAll('.message');
-      messages.forEach(msg => {
-        msg.classList.remove('search-match-message', 'highlighted');
-      });
+    function renderSearchResults() {
+      const panel = document.getElementById('searchResultsPanel');
+      const list = document.getElementById('searchResultsList');
+      const count = document.getElementById('searchResultsCount');
 
-      // Remove highlights from text
-      const matches = container.querySelectorAll('.search-match');
-      matches.forEach(match => {
-        const parent = match.parentElement;
-        if (parent) {
-          parent.innerHTML = escapeHtml(parent.textContent);
-        }
-      });
-
-      updateSearchNavigation();
-      
-      // Re-render to remove search highlights from text
-      if (currentMessages && currentMessages.length > 0) {
-        renderMessages();
-      }
-    }
-
-    function jumpToSearchResult(index) {
-      if (index < 0 || index >= searchResults.length) return;
-
-      const filteredMessages = getFilteredMessages();
-      const messageIndex = searchResults[index];
-      
-      // Ensure the message is loaded
-      const wasReloaded = ensureMessageLoaded(messageIndex);
-      
-      if (wasReloaded) {
-        // Wait for render to complete, then jump
-        setTimeout(() => {
-          jumpToSearchResult(index);
-        }, 100);
+      if (!searchQuery || !searchQuery.trim()) {
+        panel.classList.remove('show');
         return;
       }
 
-      // Find the message element in the DOM
-      const container = document.getElementById('messagesContainer');
+      panel.classList.add('show');
+      count.textContent = `${searchResults.length} ${searchResults.length === 1 ? 'result' : 'results'}`;
+
+      if (searchResults.length === 0) {
+        list.innerHTML = '<div class="search-results-empty">No messages found</div>';
+        return;
+      }
+
+      // Build results HTML
+      const query = searchQuery.toLowerCase().trim();
+      const escapedQuery = escapeHtml(query);
+      const regex = new RegExp(`(${escapedQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+
+      list.innerHTML = searchResults.map((result, idx) => {
+        const message = result.message;
+        const sender = message.sender || 'Unknown';
+        const timestamp = formatTimestamp(message.timestamp_ms);
+        
+        // Get avatar
+        const avatarSrc = senderProfilePictures[sender] || '';
+        const avatarHtml = avatarSrc 
+          ? `<img src="${avatarSrc}" alt="${escapeHtml(sender)}" />`
+          : `<div>${escapeHtml(sender.charAt(0).toUpperCase())}</div>`;
+
+        // Highlight query in snippet
+        const highlightedSnippet = escapeHtml(result.snippet).replace(regex, '<span class="search-highlight">$1</span>');
+
+        return `
+          <div class="search-result-item" data-message-index="${result.index}" data-result-index="${idx}">
+            <div class="search-result-avatar">${avatarHtml}</div>
+            <div class="search-result-content">
+              <div class="search-result-header">
+                <span class="search-result-sender">${escapeHtml(sender)}</span>
+                <span class="search-result-time">${timestamp}</span>
+              </div>
+              <div class="search-result-text">${highlightedSnippet}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Add click handlers
+      list.querySelectorAll('.search-result-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const messageIndex = parseInt(item.dataset.messageIndex);
+          jumpToMessage(messageIndex);
+        });
+      });
+    }
+
+    function jumpToMessage(messageIndex) {
+      const filteredMessages = getFilteredMessages();
+      if (messageIndex < 0 || messageIndex >= filteredMessages.length) return;
+
+      // Ensure message is loaded
       const totalMessages = filteredMessages.length;
       const startIndex = Math.max(0, totalMessages - displayedCount);
-      const renderedIndex = messageIndex - startIndex;
       
+      if (messageIndex < startIndex) {
+        // Load messages up to this point
+        const messagesToLoad = startIndex - messageIndex + MESSAGES_PER_LOAD;
+        displayedCount = Math.min(displayedCount + messagesToLoad, totalMessages);
+        renderMessages(false);
+        
+        // Wait for render, then jump
+        setTimeout(() => jumpToMessage(messageIndex), 100);
+        return;
+      }
+
+      // Find and scroll to message
+      const container = document.getElementById('messagesContainer');
+      const renderedIndex = messageIndex - startIndex;
       const allMessages = container.querySelectorAll('.message');
       const targetMessage = allMessages[renderedIndex];
-      
+
       if (!targetMessage) return;
 
-      // Remove previous highlight
+      // Remove previous highlights
       allMessages.forEach(msg => msg.classList.remove('highlighted'));
 
-      // Highlight current result
-      targetMessage.classList.add('highlighted', 'search-match-message');
-      currentSearchIndex = index;
+      // Highlight target message
+      targetMessage.classList.add('highlighted');
 
       // Scroll to message
       const messageTop = targetMessage.offsetTop;
       const messageHeight = targetMessage.offsetHeight;
       const containerHeight = container.clientHeight;
-
-      // Center the message in view
       const targetScroll = messageTop - (containerHeight / 2) + (messageHeight / 2);
+      
       container.scrollTo({
         top: targetScroll,
         behavior: 'smooth'
       });
 
-      updateSearchNavigation();
+      // Hide search panel after a moment
+      setTimeout(() => {
+        const panel = document.getElementById('searchResultsPanel');
+        panel.classList.remove('show');
+      }, 300);
     }
 
-    function updateSearchNavigation() {
-      const nav = document.getElementById('searchNavigation');
-      const prevButton = document.getElementById('searchPrevButton');
-      const nextButton = document.getElementById('searchNextButton');
-      const info = document.getElementById('searchNavInfo');
-
-      if (!searchQuery || !searchQuery.trim() || searchResults.length === 0) {
-        nav.classList.remove('show');
-        return;
+    function clearSearch() {
+      searchQuery = '';
+      searchResults = [];
+      const panel = document.getElementById('searchResultsPanel');
+      const input = document.getElementById('searchInput');
+      if (panel) panel.classList.remove('show');
+      if (input) {
+        input.value = '';
+        input.style.display = 'none';
       }
-
-      nav.classList.add('show');
       
-      const current = currentSearchIndex + 1;
-      const total = searchResults.length;
-      const filteredMessages = getFilteredMessages();
-      const totalMessages = filteredMessages.length;
-      const startIndex = Math.max(0, totalMessages - displayedCount);
-      
-      // Check if current result is loaded
-      const currentMessageIndex = searchResults[currentSearchIndex];
-      const isLoaded = currentMessageIndex >= startIndex && currentMessageIndex < totalMessages;
-      
-      info.textContent = `${current} of ${total}${!isLoaded ? ' (loading...)' : ''}`;
-
-      prevButton.disabled = currentSearchIndex <= 0;
-      nextButton.disabled = currentSearchIndex >= searchResults.length - 1;
-    }
-
-    function goToNextSearchResult() {
-      if (currentSearchIndex < searchResults.length - 1) {
-        jumpToSearchResult(currentSearchIndex + 1);
-      }
-    }
-
-    function goToPrevSearchResult() {
-      if (currentSearchIndex > 0) {
-        jumpToSearchResult(currentSearchIndex - 1);
-      }
+      // Remove highlights from messages
+      const container = document.getElementById('messagesContainer');
+      const messages = container.querySelectorAll('.message');
+      messages.forEach(msg => msg.classList.remove('highlighted'));
     }
 
     // Removed infinite scroll handler - all messages are now loaded at once
@@ -2146,80 +2095,33 @@
           if (searchInput.style.display === 'none' || !searchInput.style.display) {
             searchInput.style.display = 'block';
             searchInput.focus();
+            // Show empty results panel
+            const panel = document.getElementById('searchResultsPanel');
+            if (panel) panel.classList.add('show');
           } else {
-            searchInput.style.display = 'none';
-            searchQuery = '';
-            searchInput.value = '';
             clearSearch();
-            // Use requestIdleCallback to prevent blocking
-            if (window.requestIdleCallback) {
-              requestIdleCallback(() => renderMessages(), { timeout: 100 });
-            } else {
-              setTimeout(() => renderMessages(), 50);
-            }
           }
         });
 
+        // Lightweight debounced search - no heavy processing
         let searchTimeout;
-        let isSearching = false;
         searchInput.addEventListener('input', (e) => {
           searchQuery = e.target.value;
           
           // Clear previous timeout
           clearTimeout(searchTimeout);
           
-          // Perform search after a longer delay (debounce) to prevent lag
+          // Simple debounce - just update results panel
           searchTimeout = setTimeout(() => {
-            if (isSearching) return; // Prevent overlapping searches
-            
-            if (searchQuery && searchQuery.trim()) {
-              isSearching = true;
-              // Use requestIdleCallback for non-blocking search
-              const doSearch = () => {
-                // Only update highlights, don't re-render everything
-                updateSearchHighlights();
-                performSearch();
-                isSearching = false;
-              };
-              
-              if (window.requestIdleCallback) {
-                requestIdleCallback(doSearch, { timeout: 500 });
-              } else {
-                setTimeout(doSearch, 100);
-              }
-            } else {
-              clearSearch();
-              // Only re-render if we had highlights
-              if (document.querySelector('.search-match')) {
-                renderMessages();
-              }
-            }
-          }, 500); // Longer debounce to prevent lag
+            performSearch(); // This is now lightweight and fast
+          }, 300); // Shorter debounce since search is fast now
         });
 
         searchInput.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') {
             e.preventDefault();
             e.stopPropagation();
-            searchInput.style.display = 'none';
-            searchQuery = '';
-            searchInput.value = '';
             clearSearch();
-            // Re-render to remove highlights (non-blocking)
-            if (currentMessages && currentMessages.length > 0) {
-              if (window.requestIdleCallback) {
-                requestIdleCallback(() => renderMessages(), { timeout: 100 });
-              } else {
-                setTimeout(() => renderMessages(), 50);
-              }
-            }
-          } else if (e.key === 'Enter') {
-            e.preventDefault();
-            if (e.shiftKey) {
-              goToPrevSearchResult();
-            } else {
-              goToNextSearchResult();
-            }
           }
         });
       }
@@ -2242,36 +2144,14 @@
         });
       }
 
-      // Set up search navigation buttons
-      const searchPrevButton = document.getElementById('searchPrevButton');
-      const searchNextButton = document.getElementById('searchNextButton');
+      // Set up search close button
       const searchCloseButton = document.getElementById('searchCloseButton');
-      
-      if (searchPrevButton) {
-        searchPrevButton.addEventListener('click', goToPrevSearchResult);
-      }
-      
-      if (searchNextButton) {
-        searchNextButton.addEventListener('click', goToNextSearchResult);
-      }
       
       if (searchCloseButton) {
         searchCloseButton.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
-          const searchInput = document.getElementById('searchInput');
-          searchInput.style.display = 'none';
-          searchQuery = '';
-          searchInput.value = '';
           clearSearch();
-          // Re-render to remove highlights (use requestIdleCallback to prevent blocking)
-          if (currentMessages && currentMessages.length > 0) {
-            if (window.requestIdleCallback) {
-              requestIdleCallback(() => renderMessages(), { timeout: 100 });
-            } else {
-              setTimeout(() => renderMessages(), 50);
-            }
-          }
         });
       }
 
