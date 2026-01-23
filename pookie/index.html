@@ -1640,6 +1640,9 @@
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${message.is_sent ? 'sent' : 'received'}`;
 
+      // Initialize variables at the top to ensure they're always defined
+      let hasInstagramAttachment = false;
+
       // Show avatar for received messages, or for sent messages if we have a profile picture
       const showAvatar = !message.is_sent || (message.is_sent && message.sender && senderProfilePictures[message.sender]);
       const avatar = showAvatar ? `
@@ -1738,11 +1741,17 @@
 
       // Handle Instagram links - embed them like Instagram does
       let attachmentsHtml = '';
+      
+      // Check if message has Instagram attachments
       if (message.attachments && message.attachments.length > 0) {
+        hasInstagramAttachment = message.attachments.some(att => 
+          att.url && att.url.includes('instagram.com')
+        );
+        
         attachmentsHtml = message.attachments.map(att => {
           const url = att.url;
           // Check if it's an Instagram post/reel
-          if (url.includes('instagram.com')) {
+          if (url && url.includes('instagram.com')) {
             // Extract username and post type from URL
             let username = '';
             let postType = 'post';
