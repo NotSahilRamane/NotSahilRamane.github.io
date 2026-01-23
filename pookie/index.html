@@ -1367,7 +1367,12 @@
       const totalMessageCount = currentMessages.length;
       
       // Set displayedCount to show last 500 messages, but not more than total
-      displayedCount = Math.min(500, totalMessageCount);
+      // Ensure it's at least 1 if there are messages
+      if (totalMessageCount > 0) {
+        displayedCount = Math.min(500, totalMessageCount);
+      } else {
+        displayedCount = 0;
+      }
 
       // Update header
       document.getElementById('chatHeader').style.display = 'flex';
@@ -1377,11 +1382,11 @@
       // Update user view menu
       updateUserViewMenu();
 
+      // Clear search when switching chats (before rendering to avoid interference)
+      clearSearch();
+
       // Render initial messages
       renderMessages();
-
-      // Clear search when switching chats
-      clearSearch();
 
       // Start auto-loading messages sequentially after a short delay
       setTimeout(() => {
@@ -1492,8 +1497,21 @@
       // Get messages to display (from the end, showing most recent)
       const totalMessages = filteredMessages.length;
       
+      // Ensure displayedCount is set correctly - if it's 0 or invalid, set it to show last 500 or all messages
+      if (!displayedCount || displayedCount <= 0 || displayedCount > totalMessages) {
+        displayedCount = totalMessages > 0 ? Math.min(500, totalMessages) : 0;
+      }
+      
       // Ensure displayedCount doesn't exceed total messages
       displayedCount = Math.min(displayedCount, totalMessages);
+      
+      // If no messages to show, exit early
+      if (displayedCount === 0 || totalMessages === 0) {
+        if (!append) {
+          container.innerHTML = '<div class="empty-state">No messages</div>';
+        }
+        return;
+      }
       
       const startIndex = Math.max(0, totalMessages - displayedCount);
       const messagesToShow = filteredMessages.slice(startIndex);
@@ -1516,9 +1534,21 @@
       // Use document fragment for better performance
       const fragment = document.createDocumentFragment();
       messagesToShow.forEach((message) => {
-        const messageDiv = createMessageElement(message);
-        fragment.appendChild(messageDiv);
+        try {
+          const messageDiv = createMessageElement(message);
+          if (messageDiv) {
+            fragment.appendChild(messageDiv);
+          }
+        } catch (error) {
+          console.error('Error creating message element:', error, message);
+        }
       });
+      
+      if (fragment.children.length === 0) {
+        container.innerHTML = '<div class="empty-state">Error rendering messages</div>';
+        return;
+      }
+      
       container.appendChild(fragment);
 
       // Scroll to bottom and re-perform search if active
