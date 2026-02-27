@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Button</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #fff;
+      color: #111;
+      min-height: 100vh;
+    }
+
+    nav {
+      position: fixed;
+      top: 1.5rem;
+      right: 2rem;
+    }
+
+    nav a {
+      margin: 0 0.75rem;
+      text-decoration: none;
+      color: #007acc;
+      font-weight: 500;
+    }
+
+    main {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .button-shell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem;
+      border-radius: 24px;
+      background: radial-gradient(circle at top, rgba(0, 0, 0, 0.08), transparent 60%);
+    }
+
+    #soundButton {
+      border: none;
+      padding: 0;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #ff8080, #e50000 55%, #7a0000 80%);
+      box-shadow:
+        0 0 0 4px #111,
+        0 14px 22px rgba(0, 0, 0, 0.45),
+        inset 0 4px 10px rgba(255, 255, 255, 0.4),
+        inset 0 -10px 18px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
+    }
+
+    #soundButton .inner {
+      width: 118px;
+      height: 118px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #ffe0e0, #ff2a2a 55%, #b00000 80%);
+      box-shadow:
+        inset 0 4px 12px rgba(255, 255, 255, 0.8),
+        inset 0 -10px 20px rgba(0, 0, 0, 0.55);
+    }
+
+    #soundButton::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border-radius: 50%;
+      border: 3px solid rgba(0, 0, 0, 0.55);
+      pointer-events: none;
+    }
+
+    #soundButton.pressed {
+      transform: translateY(4px);
+      box-shadow:
+        0 0 0 4px #111,
+        0 6px 10px rgba(0, 0, 0, 0.55),
+        inset 0 2px 6px rgba(255, 255, 255, 0.35),
+        inset 0 -6px 14px rgba(0, 0, 0, 0.7);
+    }
+
+    #soundButton.pressed .inner {
+      box-shadow:
+        inset 0 2px 8px rgba(255, 255, 255, 0.6),
+        inset 0 -4px 10px rgba(0, 0, 0, 0.7);
+    }
+
+    @media (max-width: 640px) {
+      main {
+        padding-top: 4.5rem;
+      }
+
+      #soundButton {
+        width: 130px;
+        height: 130px;
+      }
+
+      #soundButton .inner {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/about/">About</a>
+    <a href="/projects/">Projects</a>
+  </nav>
+
+  <main>
+    <div class="button-shell">
+      <button id="soundButton" aria-label="">
+        <span class="inner"></span>
+      </button>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const urls = [
+        "https://www.myinstants.com/media/sounds/aayein-meme.mp3",
+        "https://www.myinstants.com/media/sounds/family-dekhte-hain-nahi-to.mp3",
+        "https://www.myinstants.com/media/sounds/rom-rom-bhaiyo.mp3",
+        "https://www.myinstants.com/media/sounds/tehelka-omlette.mp3",
+        "https://www.myinstants.com/media/sounds/tmp_z5b93np.mp3",
+        "https://www.myinstants.com/media/sounds/baigan.mp3",
+        "https://www.myinstants.com/media/sounds/modi-ji-bhojyam.mp3",
+        "https://www.myinstants.com/media/sounds/america-kya-kehta-tha.mp3",
+        "https://www.myinstants.com/media/sounds/tmp8ljn9e7h.mp3",
+        "https://www.myinstants.com/media/sounds/abe-sale.mp3",
+        "https://www.myinstants.com/media/sounds/aji-mangal.mp3",
+        "https://www.myinstants.com/media/sounds/itna-chubne-laga-hu-sabko.mp3",
+        "https://www.myinstants.com/media/sounds/aisa-mat-karo.mp3",
+        "https://www.myinstants.com/media/sounds/hacker-hai-bhai-hacker-ajjubhai.mp3",
+        "https://www.myinstants.com/media/sounds/hey-prabhu-hey-hari-ram-krishna-jagganath_Ew1vEwh.mp3",
+        "https://www.myinstants.com/media/sounds/ma-ka-bhosda-aag.mp3",
+        "https://www.myinstants.com/media/sounds/jhinka-chika-jhinka-chika.mp3",
+        "https://www.myinstants.com/media/sounds/alakh-sir-motivation.mp3",
+        "https://www.myinstants.com/media/sounds/bhag-arjun.mp3",
+        "https://www.myinstants.com/media/sounds/tmpgj3wv0ae.mp3",
+        "https://www.myinstants.com/media/sounds/goo-goo-gagaaa.mp3",
+        "https://www.myinstants.com/media/sounds/ack.mp3",
+        "https://www.myinstants.com/media/sounds/chalo.mp3",
+        "https://www.myinstants.com/media/sounds/eh-eh-ehhhh.mp3",
+        "https://www.myinstants.com/media/sounds/lizardqueen.mp3",
+        "https://www.myinstants.com/media/sounds/mlem-mlem-mlem.mp3",
+        "https://www.myinstants.com/media/sounds/lizard-stereo-1.mp3",
+        "https://www.myinstants.com/media/sounds/lizard-king-mp3cut.mp3",
+        "https://www.myinstants.com/media/sounds/main-kya-ladle-meow.mp3"
+      ];
+
+      const button = document.getElementById("soundButton");
+      const inner = button.querySelector(".inner");
+      const audioPool = urls.map((url) => new Audio(url));
+      let lastIndex = -1;
+      let currentAudio = null;
+
+      function pickRandomIndex() {
+        if (urls.length <= 1) return 0;
+        let idx = lastIndex;
+        while (idx === lastIndex) {
+          idx = Math.floor(Math.random() * urls.length);
+        }
+        lastIndex = idx;
+        return idx;
+      }
+
+      if (button && inner) {
+        button.addEventListener("click", () => {
+          button.classList.add("pressed");
+          inner.classList.add("pressed");
+
+          setTimeout(() => {
+            button.classList.remove("pressed");
+            inner.classList.remove("pressed");
+          }, 140);
+
+          if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+          }
+
+          const idx = pickRandomIndex();
+          currentAudio = audioPool[idx];
+          currentAudio.play().catch(() => {});
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
+
